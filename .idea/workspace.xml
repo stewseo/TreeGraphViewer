@@ -51,16 +51,81 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/java/LCA_and_ShortestPath/app" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/java/ExpressionTree" />
     <property name="settings.editor.selected.configurable" value="MTConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\java\ExpressionTree" />
       <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\java\LCA_and_ShortestPath\app" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="AVLTree" />
+      <recent name="ExpressionTree" />
       <recent name="LCA_and_ShortestPath.app" />
     </key>
+  </component>
+  <component name="RunManager" selected="Application.TreeViewer">
+    <configuration name="TreeMain (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="AVLTree.TreeMain" />
+      <module name="LCA_and_ShortestPath.app.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="AVLTree.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TreeMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="LCA_and_ShortestPath.app.TreeMain" />
+      <module name="LCA_and_ShortestPath.app.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="LCA_and_ShortestPath.app.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TreeViewer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="LCA_and_ShortestPath.app.TreeViewer" />
+      <module name="LCA_and_ShortestPath.app.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="LCA_and_ShortestPath.app.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ExpressionTree.main" />
+      <module name="LCA_and_ShortestPath.app.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ExpressionTree.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.main" />
+        <item itemvalue="Application.TreeMain (1)" />
+        <item itemvalue="Application.TreeViewer" />
+        <item itemvalue="Application.TreeMain" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
