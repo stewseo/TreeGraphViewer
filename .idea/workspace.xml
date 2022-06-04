@@ -40,6 +40,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
@@ -51,11 +54,13 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/java/ExpressionTree" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/java/view" />
     <property name="settings.editor.selected.configurable" value="MTConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\java\view" />
+      <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\java" />
       <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\java\ExpressionTree" />
       <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\java\LCA_and_ShortestPath\app" />
     </key>
@@ -65,7 +70,20 @@
       <recent name="LCA_and_ShortestPath.app" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TreeViewer">
+  <component name="RunManager" selected="Application.AVLTreeInsert_Collapse_View">
+    <configuration name="AVLTreeInsert_Collapse_View" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="view.AVLTreeInsert_Collapse_View" />
+      <module name="LCA_and_ShortestPath.app.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="view.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TreeMain (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="AVLTree.TreeMain" />
       <module name="LCA_and_ShortestPath.app.main" />
@@ -120,6 +138,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.AVLTreeInsert_Collapse_View" />
         <item itemvalue="Application.main" />
         <item itemvalue="Application.TreeMain (1)" />
         <item itemvalue="Application.TreeViewer" />

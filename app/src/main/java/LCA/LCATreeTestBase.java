@@ -1,4 +1,4 @@
-package LCA_and_ShortestPath.app;
+package LCA;
 
 import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;

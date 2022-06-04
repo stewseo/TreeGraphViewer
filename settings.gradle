@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'LCA_and_ShortestPath'
-include('app', 'list', 'utilities')
+include('app')
