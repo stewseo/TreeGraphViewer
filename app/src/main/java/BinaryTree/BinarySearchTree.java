@@ -111,23 +111,25 @@ import java.util.*;
             node.greater = lesser;
 
             if (lesser != null) {
-                System.out.println("lesser != null " +lesser.parent +" "+ " " + node);
+                System.out.println("lesser != null lesser.parent = node " +lesser.parent +" "+ " " + node);
                 lesser.parent = node;
             }
             if (parent != null) {
                 if (node == parent.lesser) {
-                    System.out.println("parent != null " + parent.lesser +" "+ " " + node);
+                    System.out.println("parent != null parent.lesser = greater " + parent.lesser +" "+ " " + node);
                     parent.lesser = greater;
 
                 } else if (node == parent.greater) {
-                    System.out.println("node == parent.greater " +parent.greater +" "+ " " + node);
+                    System.out.println("node == parent.greater parent.greater = greater " +parent.greater +" "+ " " + node);
                     parent.greater = greater;
                 }
                 else {
                     throw new RuntimeException("Yikes! I'm not related to my parent. " + node.toString());
                 }
                 greater.parent = parent;
+                System.out.println("greater.parent = parent " + greater.parent);
             } else {
+                System.out.println(" new root = greater " + greater.parent);
                 root = greater;
                 root.parent = null;
             }
@@ -163,6 +165,7 @@ import java.util.*;
         }
 
 
+
         protected Node<T> getGreatest(Node<T> startingNode) {
             if (startingNode == null)
                 return null;
@@ -177,8 +180,6 @@ import java.util.*;
             }
             return greater;
         }
-
-
         protected Node<T> getLeast(Node<T> startingNode) {
             if (startingNode == null)
                 return null;
@@ -193,7 +194,6 @@ import java.util.*;
             }
             return lesser;
         }
-
 
         @Override
         public T remove(T value) {
@@ -219,7 +219,7 @@ import java.util.*;
         }
 
 
-        protected Node<T> getSuccessor(Node<T> nodeToRemoved) {
+        public Node<T> getSuccessor(Node<T> nodeToRemoved) {
             Node<T> successor = null;
             if (nodeToRemoved.greater != null && nodeToRemoved.lesser != null) {
                 // Two children.

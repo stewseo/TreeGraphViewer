@@ -71,6 +71,19 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.AVLTreeInsert_Collapse_View">
+    <configuration name="AVLRebalanceTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="view.AVLRebalanceTest" />
+      <module name="LCA_and_ShortestPath.app.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="view.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="AVLTreeInsert_Collapse_View" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="view.AVLTreeInsert_Collapse_View" />
       <module name="LCA_and_ShortestPath.app.main" />
@@ -84,12 +97,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TreeMain (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="AVLTree.TreeMain" />
+    <configuration name="AnimatingAddNodeDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Performance.AnimatingAddNodeDemo" />
       <module name="LCA_and_ShortestPath.app.main" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="AVLTree.*" />
+          <option name="PATTERN" value="Performance.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -97,12 +110,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TreeMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="LCA_and_ShortestPath.app.TreeMain" />
+    <configuration name="SubLayoutDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ExpressionTree.SubLayoutDemo" />
       <module name="LCA_and_ShortestPath.app.main" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="LCA_and_ShortestPath.app.*" />
+          <option name="PATTERN" value="ExpressionTree.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -110,21 +123,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TreeViewer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="LCA_and_ShortestPath.app.TreeViewer" />
-      <module name="LCA_and_ShortestPath.app.main" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="LCA_and_ShortestPath.app.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ExpressionTree.main" />
+    <configuration name="VertexSizeAwareTreeDAGLayoutDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ExpressionTree.VertexSizeAwareTreeDAGLayoutDemo" />
       <module name="LCA_and_ShortestPath.app.main" />
       <extension name="coverage">
         <pattern>
@@ -138,11 +138,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.AnimatingAddNodeDemo" />
         <item itemvalue="Application.AVLTreeInsert_Collapse_View" />
-        <item itemvalue="Application.main" />
-        <item itemvalue="Application.TreeMain (1)" />
-        <item itemvalue="Application.TreeViewer" />
-        <item itemvalue="Application.TreeMain" />
+        <item itemvalue="Application.VertexSizeAwareTreeDAGLayoutDemo" />
+        <item itemvalue="Application.AVLRebalanceTest" />
+        <item itemvalue="Application.SubLayoutDemo" />
       </list>
     </recent_temporary>
   </component>

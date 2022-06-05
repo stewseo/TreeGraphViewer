@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
-    private enum Balance {
+    public enum Balance {
         LEFT_LEFT, LEFT_RIGHT, RIGHT_LEFT, RIGHT_RIGHT
     }
 
@@ -31,29 +31,14 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
             super(creator);
     }
 
-
-    public AVLNode<T> addView(AVLNode<T>node) {
-        AVLNode<T> newNode = node;
-
-        if(node.greater != null){
-            newNode.greater = node.greater;
-        }
-        if(node.lesser != null){
-            newNode.lesser = node.lesser;
-        }
-        if(node.parent != null) {
-            newNode.parent = node.parent;
-        }
-        return newNode;
-    }
     @Override
     public Node<T> addValue(T id) {
         Node<T> nodeToReturn = super.addValue(id);
 
-
         AVLNode<T> nodeAdded = (AVLNode<T>) nodeToReturn;
 
         nodeAdded.updateHeight();
+
         balanceAfterInsert(nodeAdded);
 
         nodeAdded = (AVLNode<T>) nodeAdded.parent;
@@ -65,7 +50,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
             // If height before and after balance is the same, stop going up the tree
             int h2 = nodeAdded.height;
-            if (h1==h2)
+            if (h1 == h2)
                 break;
 
             nodeAdded = (AVLNode<T>) nodeAdded.parent;
@@ -76,53 +61,71 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         return nodeToReturn;
     }
 
+    public AVLNode<T> getMax(){return (AVLNode<T>) super.getGreatest(root);}
+    public AVLNode<T> getMin(){return (AVLNode<T>) super.getLeast(root);}
+
+    private int balanceFactor;
+    private Balance balance;
+
     private void balanceAfterInsert(AVLNode<T> node) {
-        int balanceFactor = node.getBalanceFactor();
+        balanceFactor = node.getBalanceFactor();
+
         if (balanceFactor > 1 || balanceFactor < -1) {
             AVLNode<T> child = null;
-            Balance balance = null;
+            balance = null;
+
+            StringBuilder balanceAfterInsert = new StringBuilder(" Balance Factor is over threshhold of -1,0,1");
             if (balanceFactor < 0) {
+
                 child = (AVLNode<T>) node.lesser;
                 balanceFactor = child.getBalanceFactor();
-                if (balanceFactor < 0)
+
+                if (balanceFactor < 0) {
                     balance = Balance.LEFT_LEFT;
-                else
+                    balanceAfterInsert.append(balance).append(" ");
+                }
+                else {
                     balance = Balance.LEFT_RIGHT;
+                    balanceAfterInsert.append(balance).append(" ");
+                }
             } else {
                 child = (AVLNode<T>) node.greater;
                 balanceFactor = child.getBalanceFactor();
-                if (balanceFactor < 0)
+                if (balanceFactor < 0) {
+                    balanceAfterInsert.append(balance).append(" greater child must be balanced");
                     balance = Balance.RIGHT_LEFT;
-                else
+                }
+                else {
+                    balanceAfterInsert.append(balance).append(" greater child must be balanced");
                     balance = Balance.RIGHT_RIGHT;
+                }
             }
-
             if (balance == Balance.LEFT_RIGHT) {
-//                System.out.println("balance == Balance.LEFT_RIGHT rotateLeft(child) "+child+"  rotateRight(node) " +node);
                 rotateLeft(child);
                 rotateRight(node);
             } else if (balance == Balance.RIGHT_LEFT) {
-//                System.out.println("balance == Balance.RIGHT_LEFT rotateRight(child) "+child+"  rotateLeft(node) " +node);
-                // Right-Left (Right rotation, left rotation)
                 rotateRight(child);
                 rotateLeft(node);
             } else if (balance == Balance.LEFT_LEFT) {
-//                System.out.println("balance == Balance.LEFT_LEFT rotateRight(node)    rotateRight(node) " +node);
-                // Left-Left (Right rotation)
                 rotateRight(node);
             } else {
-//                System.out.println("balance == Balance.RIGHT_RIGHT rotateRight(node)  rotateLeft(node) " +node);
-                // Right-Right (Left rotation)
                 rotateLeft(node);
             }
             child.updateHeight();
             node.updateHeight();
-//            System.out.println("child.updateHeight() " + child.height +"  node.updateHeight(): " +node.height);
         }
     }
+    public int getBalanceFactor(){
+        return balanceFactor;
+    }
 
-        @Override
-        protected Node<T> removeValue(T value) {
+    public Balance getBalance(){
+
+        return balance;
+    }
+
+    @Override
+    protected Node<T> removeValue(T value) {
             // Find node to remove
             Node<T> nodeToRemoved = this.getNode(value);
             if (nodeToRemoved==null)
@@ -219,7 +222,6 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
             }
             if (avlNode.isLeaf()) {
                 if (avlNode.height != 1) {
-//                    System.out.println(" height is not valid");
                     return false;
                 }
             } else {
@@ -263,16 +265,21 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
                 return ((lesser == null) && (greater == null));
             }
 
+            StringBuilder sbUpdateHeight;
+
             protected int updateHeight() {
                 int lesserHeight = 0;
+                sbUpdateHeight = new StringBuilder();
                 if (lesser != null) {
                     AVLNode<T> lesserAVLNode = (AVLNode<T>) lesser;
+                    sbUpdateHeight.append(lesserAVLNode.height).append(" ");
                     lesserHeight = lesserAVLNode.height;
                 }
                 int greaterHeight = 0;
                 if (greater != null) {
                     AVLNode<T> greaterAVLNode = (AVLNode<T>) greater;
                     greaterHeight = greaterAVLNode.height;
+                    sbUpdateHeight.append(greater.id.toString()).append(" ").append(greaterHeight);
                 }
 
                 if (lesserHeight > greaterHeight) {
@@ -280,23 +287,29 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
                 } else {
                     height = greaterHeight + 1;
                 }
-//                System.out.println("updated height");
                 return height;
             }
+            StringBuilder sbBalanceFactor;
             protected int getBalanceFactor() {
+                sbBalanceFactor = new StringBuilder();
 
                 int lesserHeight = 0;
                 if (lesser != null) {
+                    sbBalanceFactor.append(lesser.id).append(" ").append(lesserHeight).append(" ");
                     AVLNode<T> lesserAVLNode = (AVLNode<T>) lesser;
                     lesserHeight = lesserAVLNode.height;
                 }
                 int greaterHeight = 0;
                 if (greater != null) {
+
                     AVLNode<T> greaterAVLNode = (AVLNode<T>) greater;
+                    sbBalanceFactor.append(greater.id).append(" ").append(greaterHeight);
                     greaterHeight = greaterAVLNode.height;
                 }
-//                System.out.println("Returning Greater height - lesser height  ");
                 return greaterHeight - lesserHeight;
+            }
+            public int getHeight(){
+                return height;
             }
 
             @Override
