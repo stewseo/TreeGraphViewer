@@ -1,4 +1,4 @@
-package PriorityQueue.ShortestPath;
+package ShortestPath;
 
 import org.jgrapht.alg.interfaces.AStarAdmissibleHeuristic;
 import org.jgrapht.alg.interfaces.ManyToManyShortestPathsAlgorithm;

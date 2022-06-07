@@ -1,7 +1,6 @@
-package PriorityQueue;
+package PriorityMinMaxHeap;
 
 import java.util.Collections;
-import java.util.concurrent.PriorityBlockingQueue;
 
 public class PriorityQueue {
     public static void main(String args) {
