@@ -1,12 +1,14 @@
 package AVLTree;
 
+import BinaryTree.BinarySearchTree;
+
 import java.util.*;
 import java.util.function.Consumer;
 
 /*
-Imeplementation of JUNG and JGraphT's AVL tree
+Implementation of JUNG and JGraphT's AVL tree with Module12 BST
  */
-public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
+public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T> implements Iterable<T> {
 
     private AVLNode<T> virtualRoot = new AVLNode<T>(null);
 
@@ -18,8 +20,6 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
     private AVLTree(AVLNode<T> value) {
        makeRoot(value);
     }
-
-
 
     public AVLNode<T> addMax(T value) {
         AVLNode<T> newMax = new AVLNode<T>(value);
@@ -50,8 +50,8 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
         registerModification();
 
         AVLNode<T> predecessor = predecessor(node);
+        // node is min, swap
         if (predecessor == null) {
-            // node is a minimum node
             AVLTree<T> tree = new AVLTree<T>();
             swap(tree);
             return tree;
@@ -122,7 +122,6 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
     }
 
 
-
     private void makeRoot(AVLNode<T> node) {
         virtualRoot.left = node;
         if (node != null) {
@@ -149,7 +148,8 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
         registerModification();
         if (isEmpty()) {
             return;
-        } else if (tree.getSize() == 1) {
+        }
+        else if (tree.getSize() == 1) {
             addMaxNode(tree.removeMin());
             return;
         }
@@ -167,20 +167,8 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
         virtualRoot.left = null;
     }
 
-    private int getSize() {
+    public int getSize() {
         return virtualRoot.left == null ? 0 : virtualRoot.left.subtreeSize;
-    }
-
-    public AVLNode<T>  successor(AVLNode<T> node) {
-        return node.successor;
-    }
-
-    public AVLNode<T> predecessor(AVLNode<T>node) {
-        return node.predecessor;
-    }
-
-    public AVLNode<T> getMin() {
-        return getRoot() == null ? null : getRoot().getSubtreeMin();
     }
 
     public void mergeBefore(AVLTree<T> tree) {
@@ -192,13 +180,13 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
     }
     private void swap(AVLTree<T> tree) {
         AVLNode<T> t = virtualRoot.left;
+        System.out.println("swap current instance root: " + t + " with param tree root " + tree);
         makeRoot(tree.virtualRoot.left);
         tree.makeRoot(t);
     }
 
     /**
-     * Merges the left and  right} subtrees using the junctionNode.
-     *  Donald E. Knuth.'s
+     * Merges the left and right subtrees using the junctionNode.
      * @param junctionNode a node between left and right subtrees
      * @param left a left subtree
      * @param right a right subtree
@@ -226,7 +214,6 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
             return balanceNode(junctionNode);
         }
     }
-
     public AVLNode<T> removeMin() {
         registerModification();
 
@@ -246,9 +233,6 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
         return min;
     }
 
-    AVLNode<T>  getMax() {
-        return getRoot() == null ? null : getRoot().getSubtreeMax();
-    }
 
     public AVLNode<T> removeMax() {
         registerModification();
@@ -335,6 +319,18 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
         }
         return node;
     }
+
+    public AVLNode<T> predecessor(AVLNode<T>node) {
+        return node.predecessor;
+    }
+
+    public AVLNode<T> getMin() {return getRoot() == null ? null : getRoot().getSubtreeMin();
+    }
+    public AVLNode<T> successor(AVLNode<T> node) {
+        return node.successor;
+    }
+
+    public AVLNode<T> getMax() {return getRoot() == null ? null : getRoot().getSubtreeMax();}
     public boolean isEmpty() {
 
         return getRoot() == null;
@@ -370,6 +366,7 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
         return new AVLNodeIterator();
     }
 
+
     private class AVLValueIterator implements Iterator<T> {
 
         private AVLNodeIterator iterator;
@@ -378,7 +375,6 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
 
             iterator  = new AVLNodeIterator();
         }
-
 
         @Override
         public boolean hasNext() {
@@ -425,7 +421,7 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
         }
     }
 
-    public static class AVLNode<T extends Comparable<T>> {
+    public static class AVLNode<T extends Comparable<? super T>>{
         T value;
 
         AVLNode<T> left, parent, right;
@@ -439,11 +435,9 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
         int subtreeSize, height;
 
         public AVLNode (T value) {
-
             this.value = value;
             reset();
         }
-
 
         public T getValue() {
     return value;
@@ -456,91 +450,76 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
             }
             return current.left;
         }
-
+        public AVLNode<T> getSubtreeMin() {
+            return subtreeMin;
+        }
+        AVLNode<T> getSubtreeMax() {
+            return subtreeMax;
+        }
+        public AVLNode<T> getTreeMin() {
+            return getRoot().getSubtreeMin();
+        }
+        public AVLNode<T> getTreeMax() {
+            return getRoot().getSubtreeMax();
+        }
+        public AVLNode<T> getParent() {
+            return parent;
+        }
+        public AVLNode<T> getLeft() {
+            return left;
+        }
         public AVLNode<T> getRight() {
             return right;
         }
+        int getHeight() {return height;}
+        int getSubtreeSize() {return subtreeSize;}
 
+        void reset() {
+            this.height = 1;
+            this.subtreeSize = 1;
+            this.subtreeMin = this;
+            this.subtreeMax = this;
+            this.left = this.right = this.parent = this.predecessor = this.successor = null;
+        }
+
+        //Resets this node to the default state
         public void setRight(AVLNode<T> right) {
             this.right = right;
         }
 
-        public AVLNode<T> getSubtreeMin() {
-            return subtreeMin;
-        }
-
-        private AVLNode<T> getSubtreeMax() {
-            return subtreeMax;
-        }
-
-
-        public AVLNode<T> getMin() {
-            return getRoot() == null ? null : getRoot().getSubtreeMin();
-        }
 
         boolean isLeftChild()
         {
             return this == parent.left;
         }
 
-        public AVLNode<T> successor(AVLNode<T> node) {
-            return node.successor;
-        }
-
-        public AVLNode<T> getTreeMin() {
-            return getRoot().getSubtreeMin();
-        }
-
-        public AVLNode<T> getTreeMax() {
-            return getRoot().getSubtreeMax();
-        }
-
-        public AVLNode<T> getParent() {
-            return parent;
-        }
 
 
         public void setValue(T value) {
             this.value = value;
         }
-
-        public AVLNode<T> getLeft() {
-            return left;
-        }
-
         public void setLeft(AVLNode<T> left) {
             this.left = left;
         }
-
         public void setParent(AVLNode<T> parent) {
             this.parent = parent;
         }
-
         public void setSubtreeMin(AVLNode<T> subtreeMin) {
             this.subtreeMin = subtreeMin;
         }
-
         public void setSubtreeMax(AVLNode<T> subtreeMax) {
             this.subtreeMax = subtreeMax;
         }
-
         public void setSubtreeSize(int subtreeSize) {
             this.subtreeSize = subtreeSize;
         }
-
         public void setHeight(int height) {
             this.height = height;
         }
 
-        int getSubtreeSize() {
-            return subtreeSize;
-        }
-
-
         public AVLNode<T> getSuccessor() {
             return successor;
         }
-
 
         public AVLNode<T> getPredecessor() {
             return predecessor;
@@ -554,14 +533,12 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
             }
         }
 
-
         void setPredecessor(AVLNode<T> node) {
             predecessor = node;
             if (node != null) {
                 node.successor = this;
             }
         }
-
 
         int getRightHeight() {
             return right == null ? 0 : right.height;
@@ -612,7 +589,6 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
             }
         }
 
-
         public  void setRightChild(AVLNode<T> node) {
             right = node;
             if (node != null) {
@@ -636,16 +612,6 @@ public class AVLTree<T extends Comparable<T>> implements Iterable<T> {
             }
         }
 
-        int getHeight() {
-            return height;
-        }
-        void reset() {
-            this.height = 1;
-            this.subtreeSize = 1;
-            this.subtreeMin = this;
-            this.subtreeMax = this;
-            this.left = this.right = this.parent = this.predecessor = this.successor = null;
-        }
 
 
 //    }

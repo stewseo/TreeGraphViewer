@@ -1,37 +1,23 @@
 package AVLTree;
+import org.checkerframework.checker.units.qual.A;
+import  org.jgrapht.traverse.DepthFirstIterator;
+import org.jgrapht.traverse.TopologicalOrderIterator;
+import org.jgrapht.traverse.LexBreadthFirstIterator;
 
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class TreeMain {
 
     public static void main(String[] args) {
-        AVLTree<Integer> avlt = new AVLTree<Integer>();
-        avlt.addMax(5);
-        avlt.addMax(5);
-        avlt.addMax(5);
-        avlt.addMax(5);
-        avlt.addMax(5);
-        avlt.addMax(5);
-        avlt.addMax(5);
-        AVLTreeTest ss = new AVLTreeTest();
-        ss.testOneNode();;
-        ss.testAddMax();
-
-
-    }
-
-
-    public static void testAddMin() {
+        AVLTreeUtil avlUtil = new AVLTreeUtil();
         AVLTree<Integer> tree = new AVLTree<Integer>();
-        org.jgrapht.util.AVLTree<Integer> testTree = new org.jgrapht.util.AVLTree<Integer>();
-        final int testNum = 50;
-        for (int nodeNum = 0; nodeNum < testNum; nodeNum++) {
-            for (int i = 0; i < nodeNum; i++) {
-                testTree.addMin(i);
-                tree.addMin(i);
-            }
-        }
-        testTree.iterator().forEachRemaining(System.out::print);
+        AVLTreeTest treeTest = new AVLTreeTest();
+        treeTest.testOneNode();
+
+
     }
+
 }
