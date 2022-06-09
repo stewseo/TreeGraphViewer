@@ -136,43 +136,73 @@ public class AVLTreeTest {
 
 
         public void testAddMax() {
-            final int testNum = 50;
+            final int testNum = 700;
             for (int nodeNum = 0; nodeNum < testNum; nodeNum++) {
                 AVLTree<Integer> tree = new AVLTree<Integer>();
                 for (int i = 0; i < nodeNum; i++) {
                     tree.addMax(i);
                     diagnostic(tree);
                 }
+                assert nodeNum == tree.getSize();
+
+                if(nodeNum == 699) {
+                    System.out.println("passed all diagnostics. tree.getSize: " + tree.getSize() + " tree.max: " + tree.getMax().getValue() + " tree.getRoot.getMax: " + tree.getRoot().getTreeMax().getValue());
+                }
             }
         }
 
         public void testAddMin() {
-            final int testNum = 5000;
-            for (int nodeNum = 0; nodeNum < testNum; nodeNum++) {
+            final int testNum = 700;
+            for (int nodeNum = testNum; nodeNum >= 0; nodeNum--) {
                 AVLTree<Integer> tree = new AVLTree<Integer>();
                 for (int i = 0; i < nodeNum; i++) {
                     tree.addMin(i);
                     diagnostic(tree);
                 }
-                System.out.println("expected: " + nodeNum +  "actual: " + tree.getSize());
+                assert nodeNum == tree.getSize();
+
+                if(nodeNum == 1) {
+                    System.out.println("tree.getSize: " + tree.getSize() + " tree.getMin: " + tree.getMin().getValue() + "\ntree.getRoot.getMin: " + tree.getRoot().getTreeMin().getValue());
+                }
             }
         }
 
+//        public void testSubstituteChild() {
+//
+//        }
+
+        //TODO: Test Ancestry Predecessor, Successor, Lowest common ancestor, Greatest common ancestor,
+
+
+
 
         public void testMergeAfter() {
-            for (int leftSize = 23; leftSize < 25; leftSize++) {
-                for (int rightSize = 23; rightSize < 25; rightSize++) {
+            for (int leftSize = 0; leftSize < 50; leftSize++) {
+                for (int rightSize = 0; rightSize < 50; rightSize++) {
                     AVLTree<Integer> left = new AVLTree<Integer>();
                     AVLTree<Integer> right = new AVLTree<Integer>();
 
                     fillNodes(left, 0, leftSize);
                     fillNodes(right, leftSize, leftSize + rightSize);
 
-                    left.mergeAfter(right);
 
+                    if(leftSize == 49 && rightSize == 49) {
+
+                        System.out.println("left size before merge: " + left.getSize() + " right size before merge: " + right.getSize());
+                        System.out.println("merging after:  " + right.getRoot());
+                        left.nodeIterator().forEachRemaining(e->System.out.print(e.getValue() + ", "));
+
+                        left.mergeAfter(right);
+
+                        left.nodeIterator().forEachRemaining(e->System.out.print(e.getValue() + ", "));
+                        System.out.println("left size after merge: " + left.getSize() + " right size after merge: " + right.getSize());
+
+                    }
+                    else{
+                        left.mergeAfter(right);
+                    }
                     testTreeValueRange(left, 0, leftSize + rightSize);
                     diagnostic(left);
-
                 }
             }
         }
@@ -187,7 +217,19 @@ public class AVLTreeTest {
                     fillNodes(left, 0, leftSize);
                     fillNodes(right, leftSize, leftSize + rightSize);
 
-                    right.mergeBefore(left);
+                    if(leftSize == 49 && rightSize == 49) {
+                        System.out.println("left size before merge: " + left.getSize() + " right size before merge: " + right.getSize());
+                        System.out.println("merging before:  " + left.getRoot());
+                        right.nodeIterator().forEachRemaining(e->System.out.print(e.getValue() + ", "));
+                        right.mergeBefore(left);
+                        right.nodeIterator().forEachRemaining(e->System.out.print(e.getValue() + ", "));
+                        System.out.println("left size after merge: " + left.getSize() + " right size after merge: " + right.getSize());
+                    }
+                    else{
+                        right.mergeBefore(left);
+
+                    }
+
 
                     testTreeValueRange(right, 0, leftSize + rightSize);
                     diagnostic(right);
@@ -197,15 +239,23 @@ public class AVLTreeTest {
 
 
         public void testSplitAfter() {
-            for (int treeSize = 1; treeSize < 50; treeSize++) {
-                for (int split = 0; split < treeSize; split++) {
+            for (int treeSize = 1; treeSize < 50; treeSize+=2) {
+                for (int split = 0; split < treeSize; split+=2) {
                     AVLTree<Integer> tree = new AVLTree<Integer>();
 
                     List<AVLTree.AVLNode<Integer>> nodes = fillNodes(tree, 0, treeSize);
 
                     AVLTree.AVLNode<Integer> splitNode = nodes.get(split);
+                    System.out.println("\n\ntree size before split: " + tree.getSize());
+                    tree.nodeIterator().forEachRemaining(e->System.out.print(e.getValue() + ", "));
 
                     AVLTree<Integer> right = tree.splitAfter(splitNode);
+                    System.out.println("\n\ntree size after split: " + tree.getSize());
+                    tree.nodeIterator().forEachRemaining(e->System.out.print(e.getValue() + ", "));
+
+                    System.out.println("\n\nright size after split: " + right.getSize());
+                    right.nodeIterator().forEachRemaining(e->System.out.print(e.getValue() + ", "));
+
 
                     testTreeValueRange(tree, 0, split + 1);
                     testTreeValueRange(right, split + 1, treeSize);
@@ -219,25 +269,36 @@ public class AVLTreeTest {
 
         public void testSplitBefore() {
 
-            for (int treeSize = 10; treeSize < 12; treeSize++) {
+            for (int treeSize = 1; treeSize < 50; treeSize++) {
                 for (int split = 0; split < treeSize; split++) {
                     AVLTree<Integer> tree = new AVLTree<Integer>();
                     List<AVLTree.AVLNode<Integer>> nodes = fillNodes(tree, 0, treeSize);
-                    System.out.println("tree before split: ");
-                    System.out.println(tree + " ,");
 
                     AVLTree.AVLNode<Integer> splitNode = nodes.get(split);
-                    AVLTree<Integer> right = tree.splitBefore(splitNode);
-                    System.out.println("tree after split: ");
-                    System.out.println(tree + " ,");
 
-//                    testTreeValueRange(tree, 0, split);
+                    if(treeSize == 49 && split == 41) {
 
-                    System.out.println("\nright after split: ");
-//                    testTreeValueRange(right, split, treeSize);
-                    System.out.println(right + " ,");
+                        System.out.println("\n\ntree size: " + tree.getSize());
+                        tree.nodeIterator().forEachRemaining(e -> System.out.print(e.getValue() + ", "));
+
+                        AVLTree<Integer> right = tree.splitBefore(splitNode);
+                        System.out.println("\n\ntree.splitBefore: " + tree.getSize());
+                        tree.nodeIterator().forEachRemaining(e -> System.out.print(e.getValue() + ", "));
+
+                        System.out.println("\n\nright size: " + right.getSize());
+                        right.nodeIterator().forEachRemaining(e -> System.out.print(e.getValue() + ", "));
+                    }
+                    else {
+                        AVLTree<Integer> right = tree.splitBefore(splitNode);
 
 
+                        testTreeValueRange(tree, 0, split);
+                        testTreeValueRange(right, split, treeSize);
+
+                        diagnostic(tree);
+                        diagnostic(right);
+
+                    }
                 }
             }
         }
@@ -245,6 +306,7 @@ public class AVLTreeTest {
 
         public void testIterator() {
             for (int treeSize = 1; treeSize < 30; treeSize++) {
+
                 AVLTree<Integer> tree = new AVLTree<Integer>();
 
                 List<AVLTree.AVLNode<Integer>> nodes = fillNodes(tree, 0, treeSize);
@@ -257,26 +319,38 @@ public class AVLTreeTest {
         }
 
         private void testTreeValueRange(AVLTree<Integer> tree, int from, int to) {
+            if(tree.isEmpty()){
+                return;
+            }
+            assert (to - from) == tree.getSize();
+
             Iterator<AVLTree.AVLNode<Integer>> it = tree.nodeIterator();
             for (int i = from; i < to; i++) {
+                assert it.hasNext();
+
                 AVLTree.AVLNode<Integer> node = it.next();
+
+                assert i == node.getValue();
             }
         }
 
         private List<AVLTree.AVLNode<Integer>> fillNodes(AVLTree<Integer> tree, int from, int to) {
+
             Deque<AVLTree.AVLNode<Integer>> nodes = new ArrayDeque<>();
             int middle = (from + to) / 2;
-            Deque<Integer> minValues =
-                    IntStream.range(from, middle).boxed().collect(Collectors.toCollection(ArrayDeque::new));
-            Deque<Integer> maxValues =
-                    IntStream.range(middle, to).boxed().collect(Collectors.toCollection(ArrayDeque::new));
-            for (int i = from; i < to; i++) {
-                int rand = RANDOM.nextInt(2);
 
+            Deque<Integer> minValues = IntStream.range(from, middle).boxed().collect(Collectors.toCollection(ArrayDeque::new));
+            Deque<Integer> maxValues = IntStream.range(middle, to).boxed().collect(Collectors.toCollection(ArrayDeque::new));
+
+            for (int i = from; i < to; i+=2) {
+                int rand = RANDOM.nextInt(2);
                 if ((rand == 0 && !minValues.isEmpty()) || maxValues.isEmpty()) {
+
                     nodes.addFirst(tree.addMin(minValues.removeLast()));
+                    assert Objects.equals(nodes.peekFirst(), tree.getMin());
                 } else {
                     nodes.addLast(tree.addMax(maxValues.removeFirst()));
+                    assert Objects.equals(nodes.peekLast(), tree.getMax());
                 }
                 diagnostic(tree);
             }
@@ -287,56 +361,64 @@ public class AVLTreeTest {
             AVLTree.AVLNode<Integer> root = tree.getRoot();
             if (root != null) {
                 AVLTree.AVLNode<Integer> virtualRoot = root.getParent();
-                if(!virtualRoot.getLeft().equals(root)){
-                    System.out.println(" FAILED. virtual root is not parent of root: " + root);
-                }
-                diagnostic(virtualRoot.getLeft());
+
+                assert virtualRoot.getLeft().equals(root);
+
+                diagnostic(virtualRoot.left);
             }
         }
 
         DiagnosticInfo diagnostic(AVLTree.AVLNode<Integer> node) {
 
             if (node == null) {
+                //subtree min,max = null, height,size = 0
                 return new DiagnosticInfo(null, null, 0, 0);
             }
+            //case left right subtree diagnostics == or equals parent tree diagnostics
             DiagnosticInfo leftInfo = diagnostic(node.getLeft());
             DiagnosticInfo rightInfo = diagnostic(node.getRight());
 
-           if(node.getHeight() != Math.max(leftInfo.height, rightInfo.height) + 1) {
+            //case subtree height: leftInfo.height + rightInfo.height + 1 is == to node.getHeight()
+           assert node.getHeight() == Math.max(leftInfo.height, rightInfo.height) + 1;
+            //case subtree size: leftInfo size + rightInfo size + 1 is == to node.getSubTreeSize()
+           assert node.getSubtreeSize() == (leftInfo.size + rightInfo.size + 1);
+            //case subtree balance: node.getLeftHeight - node.getRightHeight is < 2.
+           assert Math.abs(node.getLeftHeight()-node.getRightHeight()) < 2;
 
-           }
-           if (node.getSubtreeSize() != leftInfo.size + rightInfo.size + 1) {
-
-           }
-
-            if(Math.abs(node.getLeftHeight()-node.getRightHeight()) > 2) {
-
+           //cases when left child is null
+           if (node.getLeft() == null) {
+                //case node is subtree min: if node.getLeft returns null, node.getSubtreeMin will equals node
+                assert node.getSubtreeMin().equals(node);
             }
+            //cases when left child is not null
+            else {
+                //case parent of left: parent of left equals node
+                assert node.getLeft().getParent().equals(node);
 
-            if (node.getLeft() == null) {
-                if(node.getSubtreeMin() != node){
+                //case subtree min: node subtreeMin and left child subTreeMin will be equals
+                assert node.getSubtreeMin().equals(leftInfo.subtreeMin);
 
-                }
-            } else {
-                if(!node.getLeft().getParent().equals(node)){
+                //case node Predecessor/ leftInfo subtreeMax: node.getPredecessor and leftInfo subtreeMax will be equals
 
-                }
-
-                if(node.getSubtreeMin() != leftInfo.subtreeMin) {
-
-                }
                 assert node.getPredecessor().equals(leftInfo.subtreeMax);
 
+                //case left subtreeMax successor: leftInfo.subTreeMax.getSuccessor and node will be equals
                 assert leftInfo.subtreeMax.getSuccessor().equals(node);
             }
-
+            //cases when right child is null
             if (node.getRight() == null) {
+                //case node == subtreeMax: when right == null, node.subtreeMax and node will be equals
                 assert node.getSubtreeMax() == node;
-
-            } else {
+            }
+            //cases when right child is not null
+            else {
+                //case node is node.right.parent: node.getRight.getParent and node will be equals
                 assert node.getRight().getParent().equals(node);
+                //case subtree max: node.getSubtreeMax and rightInfo.subTreeMax will be equals
                 assert node.getSubtreeMax().equals(rightInfo.subtreeMax);
+                //case successor is rightInfo.subTreeMin: node.getSuccessor and rightInfo.subtreeMin will be equals
                 assert node.getSuccessor().equals(rightInfo.subtreeMin);
+                //case right.subTreeMin.predecessor: rightInfo.subtreeMin.predecessor and node will be equals
                 assert rightInfo.subtreeMin.predecessor.equals(node);
             }
             return new DiagnosticInfo(node.getSubtreeMin(), node.getSubtreeMax(), node.getHeight(), node.getSubtreeSize());

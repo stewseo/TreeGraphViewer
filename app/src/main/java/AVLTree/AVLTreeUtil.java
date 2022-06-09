@@ -11,6 +11,8 @@ import org.jgrapht.graph.builder.GraphTypeBuilder;
 import org.jgrapht.util.SupplierUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class AVLTreeUtil {
     private AVLTree<String> avlTree;
@@ -35,9 +37,9 @@ public class AVLTreeUtil {
                         .buildGraphBuilder();
 
         tree.addEdge( "V44", "V22");
-        tree.addEdge("V44", "V88");
+        tree.addEdge( "V44", "V88");
         tree.addEdge( "V22", "V11");
-        tree.addEdge("V22", "V33");
+        tree.addEdge( "V22", "V33");
         tree.addEdge( "V88", "V66");
         tree.addEdge( "V88", "V99");
         tree.addEdge( "V66", "V55");
@@ -94,14 +96,15 @@ public class AVLTreeUtil {
     }
 
     public String getRandom() {
-        int leftLimit = 48, rightLimit = 116, targetStringLength = 3;
+        int leftLimit = 49, rightLimit = 57, targetStringLength = 3;
         Random random = new Random();
-        // Random generator for alpha numeric Strings, limited to 3 characters per String.
-        return random.ints(leftLimit, rightLimit + 1)
-                .filter(i -> (i > 48 && i <= 114))
+        String suffix = random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i > 49 && i <= 57))
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
+
+        return "V".concat(suffix);
     }
 
     public AVLTree<String> createTestTree() {
@@ -118,5 +121,29 @@ public class AVLTreeUtil {
         avlTree.addMin("V99");
         avlTree.addMin("v100");
         return avlTree;
+    }
+
+    private static final Random RANDOM = new Random(17L);
+
+    private List<AVLTree.AVLNode<Integer>> fillNodes(AVLTree<Integer> tree, int from, int to) {
+
+        Deque<AVLTree.AVLNode<Integer>> nodes = new ArrayDeque<>();
+        int middle = (from + to) / 2;
+
+        Deque<Integer> minValues = IntStream.range(from, middle).boxed().collect(Collectors.toCollection(ArrayDeque::new));
+        Deque<Integer> maxValues = IntStream.range(middle, to).boxed().collect(Collectors.toCollection(ArrayDeque::new));
+
+        for (int i = from; i < to; i+=2) {
+            int rand = RANDOM.nextInt(2);
+            if ((rand == 0 && !minValues.isEmpty()) || maxValues.isEmpty()) {
+
+                nodes.addFirst(tree.addMin(minValues.removeLast()));
+                assert Objects.equals(nodes.peekFirst(), tree.getMin());
+            } else {
+                nodes.addLast(tree.addMax(maxValues.removeFirst()));
+                assert Objects.equals(nodes.peekLast(), tree.getMax());
+            }
+        }
+        return new ArrayList<>(nodes);
     }
 }

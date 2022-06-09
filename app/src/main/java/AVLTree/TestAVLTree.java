@@ -28,7 +28,6 @@ import java.awt.event.ItemEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.*;
-import java.util.List;
 import java.util.function.Function;
 
 import static AVLTree.LayoutHelper.getCombos;
@@ -43,111 +42,54 @@ public class TestAVLTree extends JPanel {
     int width = 20;
     int height = 20;
     Function<String, Shape> vertexShapeFunction =
-            v -> new Ellipse2D.Float(-width / 2.f, -height / 2.f, width, height);
+            v -> new Ellipse2D.Float(-width / 1.1f, -height / 1.1f, width, height);
 
-    Dimension preferredSize = new Dimension(300, 300);
-    Dimension preferredSizeRect = new Dimension(1100, 300);
-
-    Dimension subLayoutSize;
-
-
+    Dimension preferredSize = new Dimension(400, 400);
 
     AVLTreeUtil avlTreeUtil;
 
     public TestAVLTree() {
-
-            //instance of an avlTree, virtual root = null.
         avlTree = getAvlTree();
 
-        // add edge v, e. first param will add vertices to test graph
-        // hard coded Strings of V,E loaded to graph, in binary tree format.
-        //        tree.addEdge( "V44", "V22");
-        //        tree.addEdge("V44", "V88");
-        //        tree.addEdge( "V22", "V11");
-        //        tree.addEdge("V22", "V33");
-        //        tree.addEdge( "V88", "V66");
-        //        tree.addEdge( "V88", "V99");
-        //        tree.addEdge( "V66", "V55");
-        //        tree.addEdge( "V66", "V77");
-        //        tree.addEdge( "V99", "V100");
-
         avlTreeUtil = new AVLTreeUtil();
-        //Create tree from AVLTree instance
-        GraphBuilder<String, Integer, Graph<String, Integer>> testTreeBuilder
-                = GraphTypeBuilder.<String, Integer>forGraphType(DefaultGraphType.dag())
-                .edgeSupplier(SupplierUtil.createIntegerSupplier())
-                .buildGraphBuilder();
-        graph = avlTreeUtil.createForest();
-        tree = avlTreeUtil.createForest();
-        // the actual min and max values of the tree have a hard coded expected result each iteration.
-        // expected result, only values greater than the tree max or less than the tree min wil be added.
-        tree.vertexSet().forEach(root -> {
-            // Create instance of a node to be added using testGraph vertex Set
-            AVLTree.AVLNode<String> testAdd;
-            if(avlTree.getRoot() == null) {
-                //  root.left = newMin;
-                //  newMin.parent = virtualRoot;
-                testAdd = avlTree.addMin(root);
-            }
-            else{
-                // search(seek?) for a valid location for this value to be added as
-                // the root of a new subtree to this tree.
-                testAdd = new AVLTree.AVLNode<String>(root);
-                //BST add for min/max of Tree ( i dont know what to say now that I cannot use root in this format)
-                int maxComparison = root.compareTo(avlTree.getMax().getValue());
-                int minComparison = root.compareTo(avlTree.getMin().getValue());
 
-                if (maxComparison >= 0) {
-                    avlTree.addMax(root);
-                }
-                else if (minComparison <= 0) {
-                    avlTree.addMin(root);
-                }
-                else {
-                    // If predecessor is null, swap roots
-                    // AVLNode<T> t = virtualRoot.left;
-                    // this.makeRoot(tree.virtualRoot.left);
-                    // tree.makeRoot(t);
+        createTreeView(avlTreeUtil.createForest());
 
-                    System.out.println("Full tree: " + avlTree);
-                    System.out.println("node adding: " + testAdd);
-                    AVLTree<String> left = avlTree.splitBefore(testAdd);
-                    System.out.println("left: " + left);
-
-                }
-            }
-
-            Iterator<AVLTree.AVLNode<String>> iterator = avlTree.nodeIterator();
-//            testIterateByNode(result.get(0), iterator);
-
-            Iterator<String>valueiterator = avlTree.iterator();
-//            testiterateByValue(result, valueIterator);
-
-            while(iterator.hasNext()) {
-                AVLTree.AVLNode<String> current = iterator.next();
-                graph.addVertex(current.getValue());
-
-                if (current.getRight() != null) {
-                    testTreeBuilder.addEdge(current.getValue(), current.getRight().getValue());
-                }
-                if (current.getLeft() != null) {
-                    testTreeBuilder.addEdge(current.getValue(), current.getLeft().getValue());
-                }
-            }
-        });
-        System.out.println(graph.edgeSet());
-        System.out.println(graph.vertexSet());
+        graph = createTreeGraph(avlTree);
 
         setLayout(new BorderLayout());
         final DefaultModalGraphMouse<?, ?> graphMouse = new DefaultModalGraphMouse<>();
 
-        vv = createVisualizationViewer(graphMouse);
+        vv = createVisualizationViewer(graphMouse, graph);
 
         final VisualizationScrollPane panel = new VisualizationScrollPane(vv);
-        createPanel(panel, graphMouse);
-//        createComboBoxes;
-//        createButtons;
 
+        createPanel(panel, graphMouse);
+
+    }
+
+    private Graph<String, Integer> createTreeGraph(AVLTree<String> avlTree) {
+        System.out.println(avlTree.getSize());
+        GraphBuilder<String, Integer, Graph<String, Integer>> graphBuilder
+                = GraphTypeBuilder.<String, Integer>forGraphType(DefaultGraphType.dag())
+                .edgeSupplier(SupplierUtil.createIntegerSupplier())
+                .buildGraphBuilder();
+
+        Iterator<AVLTree.AVLNode<String>> iterator = avlTree.nodeIterator();
+        while(iterator.hasNext()){
+            AVLTree.AVLNode<String> current = iterator.next();
+            graphBuilder.addVertex(current.getValue());
+            System.out.print(" current node valiue: " + current.getValue());
+            if(current.left != null){
+                graphBuilder.addEdge(current.getValue(), current.getLeft().getValue());
+
+            }
+            if(current.right != null){
+                graphBuilder.addEdge(current.getValue(), current.getRight().getValue());
+
+            }
+        }
+        return graphBuilder.build();
     }
 
     private void createPanel(VisualizationScrollPane panel, DefaultModalGraphMouse<?, ?> graphMouse) {
@@ -157,21 +99,11 @@ public class TestAVLTree extends JPanel {
 
         JButton addNode = new JButton("Add Node");
         addNode.addActionListener(e -> addNode());
-//        addNode.addActionListener(e -> displayRotation());
 
 
         JButton deleteNode = new JButton("Delete Node");
         deleteNode.addActionListener(e -> deleteNode());
 
-        vv.getRenderContext().setEdgeShapeFunction(EdgeShape.articulatedLine());
-
-        vv.getRenderContext()
-                .setEdgeDrawPaintFunction(
-                        new PickableElementPaintFunction<>(vv.getSelectedEdgeState(), Color.black, Color.red));
-        vv.getRenderContext()
-                .setVertexFillPaintFunction(
-                        new PickableElementPaintFunction<>(
-                                vv.getSelectedVertexState(), Color.red, Color.blue));
 
         // add a listener for ToolTips
         vv.setVertexToolTipFunction(Object::toString);
@@ -202,59 +134,10 @@ public class TestAVLTree extends JPanel {
                     }
                 });
 
-        JComboBox<LayoutHelper.Layouts> subLayoutTypeComboBox = new JComboBox<LayoutHelper.Layouts>(getCombos());
 
-        subLayoutTypeComboBox.setRenderer(
-                new DefaultListCellRenderer() {
-                    public Component getListCellRendererComponent(
-                            JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                        String valueString = value.toString();
-                        valueString = valueString.substring(valueString.lastIndexOf('.') + 1);
-                        return super.getListCellRendererComponent(
-                                list, valueString, index, isSelected, cellHasFocus);
-                    }
-                });
-        subLayoutTypeComboBox.addItemListener(e -> {
-                    if (e.getStateChange() == ItemEvent.SELECTED) {
-                        deleteNode();
-                        addNode();
-                    }});
-
-        JComboBox<?> subLayoutDimensionComboBox =
-                new JComboBox<Object>(
-                        new Dimension[]{
-                                new Dimension(75, 75),
-                                new Dimension(100, 100),
-                                new Dimension(150, 150),
-                                new Dimension(200, 200),
-                                new Dimension(250, 250),
-                                new Dimension(300, 300)
-                        });
-        subLayoutDimensionComboBox.setRenderer(
-                new DefaultListCellRenderer() {
-                    public Component getListCellRendererComponent(
-                            JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                        String valueString = value.toString();
-                        valueString = valueString.substring(valueString.lastIndexOf('['));
-                        valueString = valueString.replaceAll("idth", "");
-                        valueString = valueString.replaceAll("eight", "");
-                        return super.getListCellRendererComponent(
-                                list, valueString, index, isSelected, cellHasFocus);
-                    }
-                });
-        subLayoutDimensionComboBox.addItemListener(
-                e -> {
-                    if (e.getStateChange() == ItemEvent.SELECTED) {
-                        subLayoutSize = (Dimension) e.getItem();
-                    }
-                });
-        subLayoutDimensionComboBox.setSelectedIndex(1);
         String instructions = "Split Merge";
-        JButton help = new JButton("Split Merge");
-        help.addActionListener(
-                e ->
-                        JOptionPane.showMessageDialog(
-                                (JComponent) e.getSource(), instructions, "Help", JOptionPane.PLAIN_MESSAGE));
+        JButton junctionNode = new JButton("Split Merge");
+        junctionNode.addActionListener(e -> JOptionPane.showMessageDialog((JComponent) e.getSource(), instructions, "Split Merge", JOptionPane.PLAIN_MESSAGE));
 
         Dimension space = new Dimension(20, 20);
         Box controls = Box.createHorizontalBox();
@@ -280,12 +163,12 @@ public class TestAVLTree extends JPanel {
         heightConstrain(layoutControls);
         controls.add(layoutControls);
 
-        JPanel subLayoutControls = new JPanel(new GridLayout(0, 1));
-        subLayoutControls.setBorder(BorderFactory.createTitledBorder("SubLayout"));
-        subLayoutControls.add(subLayoutTypeComboBox);
-        subLayoutControls.add(subLayoutDimensionComboBox);
-        heightConstrain(subLayoutControls);
-        controls.add(subLayoutControls);
+//        JPanel subLayoutControls = new JPanel(new GridLayout(0, 1));
+//        subLayoutControls.setBorder(BorderFactory.createTitledBorder("SubLayout"));
+//        subLayoutControls.add(subLayoutTypeComboBox);
+//        subLayoutControls.add(subLayoutDimensionComboBox);
+//        heightConstrain(subLayoutControls);
+//        controls.add(subLayoutControls);
         controls.add(Box.createRigidArea(space));
 
         JPanel modePanel = new JPanel(new GridLayout(1, 1));
@@ -295,32 +178,41 @@ public class TestAVLTree extends JPanel {
         controls.add(modePanel);
         controls.add(Box.createRigidArea(space));
 
-        controls.add(help);
+        controls.add(junctionNode);
         controls.add(Box.createVerticalGlue());
         add(controls, BorderLayout.SOUTH);
     }
 
-    private VisualizationViewer<String, Integer> createVisualizationViewer(DefaultModalGraphMouse<?, ?> graphMouse) {
-        vv =
-                VisualizationViewer.builder(graph)
-                        .layoutAlgorithm(
-                                TreeLayoutAlgorithm.<String>builder()
-                                        .vertexBoundsFunction(
-                                                vertexShapeFunction.andThen(s -> AWT.convert(s.getBounds2D())))
-                                        .build())
-                        .viewSize(new Dimension(600, 600))
-                        .graphMouse(graphMouse)
-                        .build();
-
-
-        vv.getRenderContext().setEdgeShapeFunction(EdgeShape.line());
+    private VisualizationViewer<String, Integer> createVisualizationViewer(DefaultModalGraphMouse<?, ?> graphMouse, Graph<String, Integer> graph) {
+//        VisualizationModel.builder(graph).layoutAlgorithm()
+        vv = VisualizationViewer.builder(graph)
+                        .layoutAlgorithm(TreeLayoutAlgorithm.<String>builder()
+                                .expandLayout(true)
+                                .build())
+                .layoutSize(new Dimension(700,700))
+                .viewSize(new Dimension(700, 700))
+                .graphMouse(graphMouse)
+                .build();
+        vv.getRenderContext().setEdgeShapeFunction(EdgeShape.articulatedLine());
         vv.getRenderContext().setVertexLabelFunction(Object::toString);
         vv.getRenderContext().setVertexLabelPosition(Renderer.VertexLabel.Position.CNTR);
         vv.getRenderContext().setVertexLabelDrawPaintFunction(n -> Color.white);
-        vv.getRenderContext().setVertexShapeFunction(vertexShapeFunction);
-        // add a listener for ToolTips
+        vv.getRenderContext().setArrowsOnUndirectedEdges(true);
+
         vv.setVertexToolTipFunction(Object::toString);
+//
         vv.getRenderContext().setArrowFillPaintFunction(n -> Color.lightGray);
+
+        vv.getRenderContext().setEdgeShapeFunction(EdgeShape.line());
+
+        vv.getRenderContext()
+                .setEdgeDrawPaintFunction(
+                        new PickableElementPaintFunction<>(vv.getSelectedEdgeState(), Color.green, Color.red));
+        vv.getRenderContext()
+                .setVertexFillPaintFunction(
+                        new PickableElementPaintFunction<>(
+                                vv.getSelectedVertexState(), Color.black, Color.red));
+
         if (log.isTraceEnabled()) {
             vv.addPreRenderPaintable(
                     new LayoutPaintable.LayoutBounds(
@@ -328,55 +220,6 @@ public class TestAVLTree extends JPanel {
         }
         return vv;
     }
-
-    private void testiterateByValue(List<AVLTree.AVLNode<String>> listAvlNodes, Iterator<String> valueIterator) {
-       for(int i=0; i<avlTree.getRoot().getSubtreeSize();i++) {
-           assert avlTree.iterator().next().equals(listAvlNodes.get(i).getValue());
-       }
-    }
-
-    private void displayRotation() {
-    }
-
-    private void testIterateByNode(AVLTree.AVLNode<String> actual,  Iterator<AVLTree.AVLNode<String>> expected) {
-        //test root
-        while(expected.hasNext()) {
-            AVLTree.AVLNode<String> expectedNode = expected.next();
-            assert expectedNode.getHeight() == actual.getHeight();
-            assert expectedNode.getSubtreeSize() == actual.getSubtreeSize();
-            assert expectedNode.getValue().equals(actual.getValue());
-
-            // max.getLeftChild(newMax);
-            // balance(max);
-            // node.parent = this;
-            // setPredecessor(node.subtreeMax);
-            // subtreeMin = node.subtreeMin;
-            if (expectedNode.getLeft() != null && actual.getLeft() != null) {
-                assert expectedNode.getPredecessor().equals(actual.getPredecessor());
-                assert expectedNode.getLeftSubtreeSize() == actual.getLeftSubtreeSize();
-                assert expectedNode.getLeftHeight() == actual.getLeftHeight();
-                assert expectedNode.getLeft().getValue().equals(actual.getLeft().getValue());
-            }
-            // max.setRightChild(newMax);
-            //balance(max);
-            //node.parent = this;
-            //setSuccessor(node.getSubtreeMin());
-            //subtreeMax = node.getSubtreeMax();
-            if (expectedNode.getRight() != null && actual.getRight() != null) {
-                assert expectedNode.getSuccessor().equals(actual.getSuccessor());
-                assert expectedNode.getRightHeight() == actual.getLeftHeight();
-                assert expectedNode.getRightSubtreeSize() == actual.getRightSubtreeSize();
-                assert expectedNode.getRight().getValue().equals(actual.getRight().getValue());
-            }
-        }
-
-
-    }
-
-//    private ChangeListener checkRotation() {
-//        System.out.println("test ");
-//        return null;
-//    }
 
     private void deleteNode() {
         delete();
@@ -392,89 +235,116 @@ public class TestAVLTree extends JPanel {
 
 
     private void insert() {
-        graph.vertexSet().forEach(System.out::print);
         avlTree = getAvlTree();
-        System.out.println(avlTree.getRoot().getLeftSubtreeSize());
-        System.out.println(avlTree.getRoot().getRightSubtreeSize());
+        System.out.println(" size: " + avlTree.getSize());
+        System.out.println(" node value: " + avlTree.getRoot().getValue());
+        System.out.println(" min node: " + avlTree.getMax().getValue());
+        System.out.println(" max node: " + avlTree.getMin().getValue());
+
         Point2D center = new Point2D.Double();
         double x = 0;
         double y = 0;
 
         AVLTree.AVLNode<String> nodeToAdd = new AVLTree.AVLNode<String>(avlTreeUtil.getRandom());
-        AVLTree<String> left = avlTree.splitBefore(nodeToAdd);
-        System.out.println(left.getRoot().getSubtreeSize());
-        try {
-            if (nodeToAdd.value.hashCode() == 0) {
-                throw new NullPointerException("Invalid value generated for node key");
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
 
-//        Collection<String> vertexSet = graph.vertexSet();
-//        Collection<Integer> edgeSet = graph.edgeSet();
-//        graph.removeAllEdges(edgeSet);
-//        graph.removeAllVertices(vertexSet);
+        addNodeToTree(nodeToAdd);
 
-
-        Iterator<AVLTree.AVLNode<String>> iterator = avlTree.nodeIterator();
-        //add each node of the tree to a new graph
-        while (iterator.hasNext()) {
-            AVLTree.AVLNode<String> current = iterator.next();
-
-            if (current.left != null) {
-                if(graph.getEdge(current.getValue(),current.left.getValue()) != null) {
-                    graph.addEdge(current.getValue(), current.left.getValue());
-                }
-            }if (current.right != null) {
-                if(graph.getEdge(current.getValue(),current.right.getValue()) != null) {
-                    graph.addEdge(current.getValue(), current.right.value.toString());
-                }
-            }
-
-        }
-
-        frame = new JFrame();
-        content = frame.getContentPane();
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        Graph<String, Integer> g = createTreeGraph(avlTree);
 
         setLayout(new BorderLayout());
-        final DefaultModalGraphMouse<?, ?> graphMouse = new DefaultModalGraphMouse<>();
-        vv = createVisualizationViewer(graphMouse);
-        final VisualizationScrollPane panel = new VisualizationScrollPane(vv);
+
+        DefaultModalGraphMouse<?, ?> graphMouse = new DefaultModalGraphMouse<>();
+
+        vv = createVisualizationViewer(graphMouse, g);
+
+        VisualizationScrollPane panel = new VisualizationScrollPane(vv);
         createPanel(panel, graphMouse);
 
-        content.add(demo);
+        content = frame.getContentPane();
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-
-
-//        frame.setVisible(false);
-
-
-//        frame.setVisible(true);
     }
 
+    private void addNodeToTree(AVLTree.AVLNode<String> nodeToAdd) {
+        System.out.println("max " + avlTree.getMax().getValue());
+        System.out.println("min " + avlTree.getMin().getValue());
+        int maxComparison = nodeToAdd.getValue().compareTo(avlTree.getMax().getValue());
+        int minComparison = nodeToAdd.getValue().compareTo(avlTree.getMin().getValue());
 
-//        System.out.println("location "+clusteringLayoutModel.getLocations());
-//        System.out.println("change support "+clusteringLayoutModel.getViewChangeSupport());
-//        System.out.println("graph: "+ clusteringLayoutModel.getGraph());
-//        System.out.println("location: " + clusteringLayoutModel.getLocations());
-//        System.out.println("height: "+ clusteringLayoutModel.getHeight());
-//        System.out.println("width: "+ clusteringLayoutModel.getWidth());
-//        System.out.println("center: "+ clusteringLayoutModel.getCenter());
-//        System.out.println("class "+clusteringLayoutModel.getClass());
+        if (maxComparison > 0) {
+            avlTree.addMax(nodeToAdd.getValue());
+        } else if (minComparison < 0) {
+            avlTree.addMin(nodeToAdd.getValue());
+        } else {
+            Stack<AVLTree.AVLNode<String>> stack = new Stack<>();
+            AVLTree.AVLNode<String> curr = avlTree.getRoot();
+            while (!stack.empty() || curr != null) {
+                if (curr != null) {
+                    stack.push(curr);
+                    curr = curr.left;
+                } else {
+                    curr = stack.pop();
+                    if (curr.getValue().compareTo(nodeToAdd.getValue()) > 0) {
+                        AVLTree<String> right = avlTree.splitBefore(curr);
+                        avlTree.addMax(nodeToAdd.getValue());
+                        avlTree.mergeBefore(right);
+                        break;
+                    }else {
+                        curr = curr.right;
+                    }
+                }
+            }
+        }
+    }
+    private void createTreeView(Graph<String, Integer> tree) {
+        tree.vertexSet().forEach(root -> {
+            System.out.println(root);
+                    if (avlTree.getRoot() == null) {
+                        avlTree.addMin(root);
+                    }
+                    else {
+                        int maxComparison = root.compareTo(avlTree.getMax().getValue());
+                        int minComparison = root.compareTo(avlTree.getMin().getValue());
+                        Iterator<AVLTree.AVLNode<String>> iterator = avlTree.nodeIterator();
 
-
+                        if (maxComparison > 0) {
+                            avlTree.addMax(root);
+                        }
+                        else if (minComparison < 0) {
+                            avlTree.addMin(root);
+                        }
+                        else {
+                            Stack<AVLTree.AVLNode<String>> stack = new Stack<>();
+                            AVLTree.AVLNode<String> curr = avlTree.getRoot();
+                            while (!stack.empty() || curr != null) {
+                                if (curr != null) {
+                                    stack.push(curr);
+                                    curr = curr.left;
+                                }
+                                else {
+                                    curr = stack.pop();
+                                    if(curr.getValue().compareTo(root) > 0) {
+                                        AVLTree<String> right = avlTree.splitBefore(curr);
+                                        avlTree.addMax(root);
+                                        avlTree.mergeBefore(right);
+                                        break;
+                                    }else {
+                                        curr = curr.right;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+    }
 
     private void heightConstrain (Component component){
         Dimension d =
                 new Dimension(component.getMaximumSize().width, component.getMinimumSize().height);
+        System.out.println(" width: " + component.getMaximumSize().width + " height: " + component.getMaximumSize().height);
         component.setMaximumSize(d);
     }
-
-
-//            vv = VisualizationViewer.builder(graph).viewSize(new Dimension(600, 600)).build();
 
     public AVLTree<String> getAvlTree(){
         if(avlTree == null) {

@@ -1,14 +1,19 @@
 package AVLTree;
 
+import BinaryTree.BinaryNode;
 import BinaryTree.BinarySearchTree;
-
 import java.util.*;
 import java.util.function.Consumer;
 
 /*
 Implementation of JUNG and JGraphT's AVL tree with Module12 BST
+AVLTree Author:
+ * @Timofey Chudakov
+BinarySearchTree Author:
+ * @author Frank M. Carrano
+ * @author Timothy M. Henry
  */
-public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T> implements Iterable<T> {
+public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 
     private AVLNode<T> virtualRoot = new AVLNode<T>(null);
 
@@ -21,6 +26,25 @@ public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T
        makeRoot(value);
     }
 
+    public AVLNode<T> insert(T value) {
+        if(value.compareTo(getMax().getValue()) >= 0) {
+            return addMax(value);
+        }
+        if(value.compareTo(getMin().getValue()) <= 0 ){
+            return addMin(value);
+        }
+        AVLNode<T> newNode = new AVLNode<T>(value);
+        insertNode(newNode);
+        return newNode;
+    }
+
+    public void insertNode(AVLNode<T> newNode) {
+        registerModification();
+        if (isEmpty()) {
+            virtualRoot.left = newNode;
+            newNode.parent = virtualRoot;
+        }
+    }
     public AVLNode<T> addMax(T value) {
         AVLNode<T> newMax = new AVLNode<T>(value);
         addMaxNode(newMax);
@@ -46,10 +70,25 @@ public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T
         return newMin;
     }
 
+    public void addMinNode(AVLNode<T> newMin) {
+        registerModification();
+        if (isEmpty()) {
+            virtualRoot.left = newMin;
+            newMin.parent = virtualRoot;
+        }
+        else {
+            AVLNode<T> min = getMin();
+            min.setLeftChild(newMin);
+            balance(min);
+        }
+    }
+
     public AVLTree<T> splitBefore(AVLNode<T> node) {
         registerModification();
-
         AVLNode<T> predecessor = predecessor(node);
+//        System.out.println("pred " + predecessor);
+//        System.out.println(" node " + node.getValue() + " ");
+
         // node is min, swap
         if (predecessor == null) {
             AVLTree<T> tree = new AVLTree<T>();
@@ -61,7 +100,6 @@ public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T
 
     public AVLTree<T> splitAfter(AVLNode<T> node) {
         registerModification();
-
         AVLNode<T> parent = node.getParent();
         boolean nextMove = node.isLeftChild();
         AVLNode<T> left = node.getLeft();
@@ -72,30 +110,52 @@ public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T
         node.reset();
 
         if (left != null) {
+            System.out.print("\n\nLEFT IS NOT EQUAL TO NULL.\n");
+            System.out.print("CUTTING LEFT CHILD's LINK TO PARENT BY POINTING LEFT.PARENT TO NULL\n");
+            System.out.println("\nLEFT VALUE: " +left.getValue() + " LEFT PARENT VALUE: " + left.parent.getValue());
             left.parent = null;
         }
         if (right != null) {
+            System.out.print("\n\nRIGHT IS NOT EQUAL TO NULL.\n");
+            System.out.print("CUTTING RIGHT CHILD's LINK TO PARENT BY POINTING RIGGHT.PARENT TO NULL\n");
+            System.out.println("\nRIGHT VALUE: " +right.getValue() + " LEFT PARENT VALUE: " + right.parent.getValue());
             right.parent = null;
         }
 
         if (left == null) {
+            System.out.println("\nleft == null; left = " + node.getValue());
             left = node;
         } else {
+
             // insert node as a left subtree max
             AVLNode<T> t = left;
             while (t.right != null) {
                 t = t.right;
             }
+            System.out.println("\n\nTRAVERSE FOR SUCESSOR (FAR RIGHT CHILD)");
+            System.out.println("\nwhile (t.right != null) t = t.right}\n t = " + t.getValue() + " .setRight( " + node.getValue() + ")");
             t.setRightChild(node);
 
+            System.out.println("\n\nBALANCE AND SUBTITUTE FOR ALL NODES UNTIL LEFT WHILE T!= LEFT " + left);
             while (t != left) {
+
+                System.out.println("\nt != left; t = " + t.getValue() + " left = " + left.getValue());
                 AVLNode<T> p = t.parent;
                 p.substituteChild(t, balanceNode(t));
+                System.out.println("\np = t.parent p = " + p.getValue() + " p.substituteChild( " + t + ", " +  p.getValue()+ ")");
                 t = p;
+                System.out.println("\nt = p; t = " + t.getValue() + " p =" + p.getValue());
             }
             left = balanceNode(left);
 
         }
+
+        T v = null;
+        if(right != null) {
+            v = right.getValue();
+        }
+        System.out.println("SPLIT(left, right, parent, next move " + " SPLIT ( " + left.getValue() +  "," + v + "," + parent.getValue() +","+ nextMove);
+
         return split(left, right, parent, nextMove);
     }
 
@@ -108,14 +168,17 @@ public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T
             p.parent = null;
 
             if (leftMove) {
+                System.out.println("right = merge " + left.getValue());
                 right = merge(p, right, p.right);
             } else {
+                System.out.println("left = merge " + left.getValue());
                 left = merge(p, p.left, left);
             }
             p = nextP;
             leftMove = nextMove;
         }
 
+        System.out.println("make root " + left.getValue());
         makeRoot(left);
 
         return new AVLTree<>(right);
@@ -131,22 +194,10 @@ public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T
         }
     }
 
-    public void addMinNode(AVLNode<T> newMin) {
-        registerModification();
-        if (isEmpty()) {
-            virtualRoot.left = newMin;
-            newMin.parent = virtualRoot;
-        } else {
-            AVLNode<T> min = getMin();
-            min.setLeftChild(newMin);
-            balance(min);
-        }
-    }
-
 
     public void mergeAfter(AVLTree<T> tree) {
         registerModification();
-        if (isEmpty()) {
+        if (tree.isEmpty()) {
             return;
         }
         else if (tree.getSize() == 1) {
@@ -154,33 +205,21 @@ public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T
             return;
         }
 
-        AVLNode<T> junctionNode = tree.removeMin();
-        AVLNode<T> treeRoot = tree.getRoot();
+        AVLTree.AVLNode<T> junctionNode = tree.removeMin();
+        AVLTree.AVLNode<T> treeRoot = tree.getRoot();
         tree.clear();
 
         makeRoot(merge(junctionNode, getRoot(), treeRoot));
     }
 
-    public void clear() {
-        registerModification();
-
-        virtualRoot.left = null;
-    }
-
-    public int getSize() {
-        return virtualRoot.left == null ? 0 : virtualRoot.left.subtreeSize;
-    }
-
     public void mergeBefore(AVLTree<T> tree) {
         registerModification();
-
         tree.mergeAfter(this);
-
         swap(tree);
     }
+
     private void swap(AVLTree<T> tree) {
         AVLNode<T> t = virtualRoot.left;
-        System.out.println("swap current instance root: " + t + " with param tree root " + tree);
         makeRoot(tree.virtualRoot.left);
         tree.makeRoot(t);
     }
@@ -282,6 +321,17 @@ public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T
         return virtualRoot.left;
     }
 
+    public void clear() {
+        registerModification();
+
+        virtualRoot.left = null;
+    }
+
+    public int getSize() {
+        return virtualRoot.left == null ? 0 : virtualRoot.left.subtreeSize;
+    }
+
+
 //      Performs a node balancing on the path from {@code node} up until the root
     private void balance(AVLNode<T> node) {
         balance(node, virtualRoot);
@@ -372,7 +422,6 @@ public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T
         private AVLNodeIterator iterator;
 
         public AVLValueIterator() {
-
             iterator  = new AVLNodeIterator();
         }
 
@@ -481,18 +530,72 @@ public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T
             this.subtreeMax = this;
             this.left = this.right = this.parent = this.predecessor = this.successor = null;
         }
-
-        //Resets this node to the default state
-        public void setRight(AVLNode<T> right) {
-            this.right = right;
+        /**
+         * Returns a height of the right subtree
+         *
+         * @return a height of the right subtree
+         */
+        int getRightHeight()
+        {
+            return right == null ? 0 : right.height;
         }
 
+
+        int getLeftHeight()
+        {
+            return left == null ? 0 : left.height;
+        }
+
+        int getLeftSubtreeSize()
+        {
+            return left == null ? 0 : left.subtreeSize;
+        }
+
+        int getRightSubtreeSize()
+        {
+            return right == null ? 0 : right.subtreeSize;
+        }
+
+        void updateHeightAndSubtreeSize()
+        {
+            height = Math.max(getLeftHeight(), getRightHeight()) + 1;
+            subtreeSize = getLeftSubtreeSize() + getRightSubtreeSize() + 1;
+        }
+
+
+        boolean isLeftDoubleHeavy() {
+            return getLeftHeight() > getRightHeight() + 1;
+        }
+
+        boolean isRightDoubleHeavy()
+        {
+            return getRightHeight() > getLeftHeight() + 1;
+        }
+
+        boolean isLeftHeavy()
+        {
+            return getLeftHeight() > getRightHeight();
+        }
+
+        boolean isRightHeavy()
+        {
+            return getRightHeight() > getLeftHeight();
+        }
 
         boolean isLeftChild()
         {
             return this == parent.left;
         }
 
+        boolean isRightChild()
+        {
+            return this == parent.right;
+        }
+
+        //Resets this node to the default state
+        public void setRight(AVLNode<T> right) {
+            this.right = right;
+        }
 
 
         public void setValue(T value) {
@@ -538,43 +641,6 @@ public class AVLTree<T extends Comparable<? super T>> extends BinarySearchTree<T
             if (node != null) {
                 node.successor = this;
             }
-        }
-
-        int getRightHeight() {
-            return right == null ? 0 : right.height;
-        }
-
-        int getLeftHeight() {
-            return left == null ? 0 : left.height;
-        }
-
-        int getLeftSubtreeSize() {
-            return left == null ? 0 : left.subtreeSize;
-        }
-
-        int getRightSubtreeSize() {
-            return right == null ? 0 : right.subtreeSize;
-        }
-
-        void updateHeightAndSubtreeSize() {
-            height = Math.max(getLeftHeight(), getRightHeight()) + 1;
-            subtreeSize = getLeftSubtreeSize() + getRightSubtreeSize() + 1;
-        }
-
-        boolean isLeftDoubleHeavy() {
-            return getLeftHeight() > getRightHeight() + 1;
-        }
-
-        boolean isRightDoubleHeavy() {
-            return getRightHeight() > getLeftHeight() + 1;
-        }
-
-        boolean isLeftHeavy() {
-            return getLeftHeight() > getRightHeight();
-        }
-
-        boolean isRightHeavy() {
-            return getRightHeight() > getLeftHeight();
         }
 
         void setLeftChild(AVLNode<T> node) {
