@@ -18,10 +18,38 @@ AVLTree Author @Timofey Chudakov from JGraphT.
 ## Expected and Actual Result from adding single node to empty tree: 
 ![ResultsTestSingleNodeAdd](https://user-images.githubusercontent.com/54422342/173126455-7f9bc6b1-6279-400b-ba2e-7f72b3e38e30.jpg)
 
-## Inserting to cause double right rotation: 
-Insert15RightDoubleHeavy.jpg
 
+            // insert 15 (not showing the split merge steps):
+            //     20+          20++           20++         9
+            //    /  \         /  \           /  \         / \
+            //   4    26 =>   4-   26 =>     9+   26 =>   4+  20
+            //  / \          / \            / \          /   /  \
+            // 3   9        3   9-         4+  15       3  15    26
+            //                   \       /
+            //                    15    3
+            tree = new AVLTree<Integer>();
+            tree.addMax(20);
+            tree.addMax(26);
+            tree.addMin(9);
+            tree.addMin(4);
+            tree.addMin(3);
+            assert tree.getSize() == 5;
+            assert tree.getRoot().getValue() == 20;
 
+            tree.insert(15);
+            assert tree.getSize() == 6;
+            assert tree.getRoot().getValue() == 9;
+
+            iterator = tree.iterator();
+            count = 1;
+            while(iterator.hasNext()) {
+                int currentValue = iterator.next();
+                if(count == 3){
+                    assert currentValue == tree.getRoot().getValue();
+                }
+                if(count++ == 4){
+                    assert currentValue == 15;
+                }
 
 
 
