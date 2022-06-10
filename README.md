@@ -18,38 +18,45 @@ AVLTree Author @Timofey Chudakov from JGraphT.
 ## Expected and Actual Result from adding single node to empty tree: 
 ![ResultsTestSingleNodeAdd](https://user-images.githubusercontent.com/54422342/173126455-7f9bc6b1-6279-400b-ba2e-7f72b3e38e30.jpg)
 
-
-            // insert 15 (not showing the split merge steps):
-            //     20+          20++           20++         9
-            //    /  \         /  \           /  \         / \
-            //   4    26 =>   4-   26 =>     9+   26 =>   4+  20
-            //  / \          / \            / \          /   /  \
-            // 3   9        3   9-         4+  15       3  15    26
-            //                   \       /
-            //                    15    3
+## Inserting 15 to tree ( inorder print): 2 3 4 7 9 11 20 21 26 30
+            // insert 15:
+            //       __20+__                _20++_                  __20++_                ___9___
+            //      /       \              /      \                /       \              /       \
+            //     4         26    =>     4-       26    =>       9+        26    =>     4+      __20__
+            //    / \       /  \         / \      /  \           / \       /  \         / \     /      \
+            //   3+  9    21    30      3+  9-  21    30        4+  11-  21    30      3+  7  11-       26
+            //  /   / \                /   / \                 / \   \                /         \      /  \
+            // 2   7   11             2   7   11-             3+  7   15             2           15  21    30
+            //                                 \            /
+            //                                  15         2
             tree = new AVLTree<Integer>();
-            tree.addMax(20);
-            tree.addMax(26);
+            tree.addMin(30);
+            tree.addMin(26);
+            tree.addMin(21);
+            tree.addMin(20);
+            tree.addMin(11);
             tree.addMin(9);
+            tree.addMin(7);
             tree.addMin(4);
             tree.addMin(3);
-            assert tree.getSize() == 5;
+            tree.addMin(2);
+            assert tree.getSize() == 10;
             assert tree.getRoot().getValue() == 20;
 
             tree.insert(15);
-            assert tree.getSize() == 6;
+            assert tree.getSize() == 11;
             assert tree.getRoot().getValue() == 9;
 
             iterator = tree.iterator();
             count = 1;
-            while(iterator.hasNext()) {
+            while (iterator.hasNext()) {
                 int currentValue = iterator.next();
-                if(count == 3){
+                if (count == 5) {
                     assert currentValue == tree.getRoot().getValue();
                 }
-                if(count++ == 4){
+                if (count++ == 7) {
                     assert currentValue == 15;
                 }
-
+            }
 
 
