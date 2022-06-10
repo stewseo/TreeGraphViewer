@@ -151,7 +151,111 @@ public class AVLTreeTest {
             }
         }
 
-        public void testAddMin() {
+        public void testInsert() {
+            AVLTree<Integer> tree = new AVLTree<Integer>();
+            tree.addMax(20);
+            tree.addMin(4);
+            assert tree.getSize() == 2;
+            assert tree.getRoot().getValue() == 20;
+
+            // insert 15:
+            //   20+      20++         20++      15
+            //  /        /            /         /  \
+            // 4     => 4-     =>   15+     => 4    20
+            //           \         /
+            //            15      4
+            AVLTree.AVLNode<Integer> added = tree.insert(15);
+            assert tree.getSize() == 3;
+            assert added.getValue() == 15;
+            assert tree.getRoot().getValue().equals(added.getValue());
+
+            Iterator<Integer> iterator = tree.iterator();
+            int count = 1;
+            while (iterator.hasNext()) {
+                int currentValue = iterator.next();
+                if (count++ == 2) {
+                    assert currentValue == 15;
+                    assert currentValue == tree.getRoot().getValue();
+                }
+            }
+            // insert 15 (not showing the split merge steps):
+            //     20+          20++           20++         9
+            //    /  \         /  \           /  \         / \
+            //   4    26 =>   4-   26 =>     9+   26 =>   4+  20
+            //  / \          / \            / \          /   /  \
+            // 3   9        3   9-         4+  15       3  15    26
+            //                   \       /
+            //                    15    3
+            tree = new AVLTree<Integer>();
+            tree.addMax(20);
+            tree.addMax(26);
+            tree.addMin(9);
+            tree.addMin(4);
+            tree.addMin(3);
+            assert tree.getSize() == 5;
+            assert tree.getRoot().getValue() == 20;
+
+            tree.insert(15);
+            assert tree.getSize() == 6;
+            assert tree.getRoot().getValue() == 9;
+
+            iterator = tree.iterator();
+            count = 1;
+            while (iterator.hasNext()) {
+                int currentValue = iterator.next();
+                if (count == 3) {
+                    assert currentValue == tree.getRoot().getValue();
+                }
+                if (count++ == 4) {
+                    assert currentValue == 15;
+                }
+
+            }
+            // insert 15:
+            //       __20+__                _20++_                  __20++_                ___9___
+            //      /       \              /      \                /       \              /       \
+            //     4         26    =>     4-       26    =>       9+        26    =>     4+      __20__
+            //    / \       /  \         / \      /  \           / \       /  \         / \     /      \
+            //   3+  9    21    30      3+  9-  21    30        4+  11-  21    30      3+  7  11-       26
+            //  /   / \                /   / \                 / \   \                /         \      /  \
+            // 2   7   11             2   7   11-             3+  7   15             2           15  21    30
+            //                                 \            /
+            //                                  15         2
+            tree = new AVLTree<Integer>();
+            tree.addMin(30);
+            tree.addMin(26);
+            tree.addMin(21);
+            tree.addMin(20);
+            tree.addMin(11);
+            tree.addMin(9);
+            tree.addMin(7);
+            tree.addMin(4);
+            tree.addMin(3);
+            tree.addMin(2);
+            assert tree.getSize() == 10;
+            assert tree.getRoot().getValue() == 20;
+
+            tree.insert(15);
+            assert tree.getSize() == 11;
+            assert tree.getRoot().getValue() == 9;
+
+            iterator = tree.iterator();
+            count = 1;
+            while (iterator.hasNext()) {
+                int currentValue = iterator.next();
+                if (count == 5) {
+                    assert currentValue == tree.getRoot().getValue();
+                }
+                if (count++ == 7) {
+                    assert currentValue == 15;
+                }
+            }
+        }
+
+    private void testTreeValues(AVLTree<Integer> tree, int i, int i1) {
+    }
+
+    public void testAddMin() {
             final int testNum = 700;
             for (int nodeNum = testNum; nodeNum >= 0; nodeNum--) {
                 AVLTree<Integer> tree = new AVLTree<Integer>();
@@ -167,13 +271,8 @@ public class AVLTreeTest {
             }
         }
 
-//        public void testSubstituteChild() {
-//
-//        }
 
         //TODO: Test Ancestry Predecessor, Successor, Lowest common ancestor, Greatest common ancestor,
-
-
 
 
         public void testMergeAfter() {

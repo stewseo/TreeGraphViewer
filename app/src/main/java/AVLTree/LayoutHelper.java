@@ -12,25 +12,11 @@ import java.util.Map;
 public class LayoutHelper {
 
     public enum Layouts {
-        EDGEAWARE("Edge Aware", new EdgeAwareTreeLayoutAlgorithm<>()),
-        TREELAYOUT("Tree Layout", new TreeLayoutAlgorithm<>()),
-        RADIALTREE("Radial Layout", new RadialTreeLayoutAlgorithm<>()),
-        KK("Kamada Kawai", new KKLayoutAlgorithm<>()),
-        CIRCLE("Circle", new CircleLayoutAlgorithm<>()),
-
-        SELF_ORGANIZING_MAP("Self Organizing Map", new ISOMLayoutAlgorithm<>()),
-        FR("Fruchterman Reingold (FR)", new FRLayoutAlgorithm<>()),
-        FR_BH_VISITOR(
-                "Fruchterman Reingold",
-                FRLayoutAlgorithm.builder()
-                        .repulsionContractBuilder(BarnesHutFRRepulsion.builder())
-                        .build()),
-        SPRING("Spring", new SpringLayoutAlgorithm<>()),
-        SPRING_BH_VISITOR(
-                "Spring (BH Optimized)",
-                SpringLayoutAlgorithm.builder()
-                        .repulsionContractBuilder(StandardSpringRepulsion.builder())
-                        .build());
+        EDGE_AWARE("Edge Aware Tree Layout", new EdgeAwareTreeLayoutAlgorithm<>()),
+        TREE_LAYOUT("Tree Layout", new TreeLayoutAlgorithm<>()),
+        TIDIER_TREE("Tidier Tree Layout ", new TidierTreeLayoutAlgorithm<>()),
+        RADIAL_TREE("Radial Tree Layout", new RadialTreeLayoutAlgorithm<>()),
+        TIDIER_RADIAL_TREE("Tidier Radial Tree Layout", new TidierRadialTreeLayoutAlgorithm<>());
 
         private static final Map<String, LayoutHelper.Layouts> BY_NAME = new HashMap<>();
 

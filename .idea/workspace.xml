@@ -61,7 +61,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="ToolWindowRun.ShowToolbar" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/java" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/images" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -69,10 +69,14 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\images" />
       <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\java" />
       <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\java\view" />
       <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\java\ExpressionTree" />
       <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\java\LCA_and_ShortestPath\app" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\seost\LCA_and_ShortestPath\app\src\main\images" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="BinaryTree" />
@@ -82,7 +86,20 @@
       <recent name="Performance" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestAVLTree">
+  <component name="RunManager" selected="Application.AVLTreeView">
+    <configuration name="AVLTreeView" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="AVLTree.AVLTreeView" />
+      <module name="LCA_and_ShortestPath.app.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="AVLTree.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="MinimumSpanningTreeDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.jungrapht.samples.tree.MinimumSpanningTreeDemo" />
       <extension name="coverage">
@@ -101,19 +118,6 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="ShortestPath.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TestAVLTree" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="AVLTree.TestAVLTree" />
-      <module name="LCA_and_ShortestPath.app.main" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="AVLTree.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -152,12 +156,12 @@
       <item itemvalue="Application.main" />
       <item itemvalue="Application.MinimumSpanningTreeDemo" />
       <item itemvalue="Application.ShortestPathDemo" />
-      <item itemvalue="Application.TestAVLTree" />
       <item itemvalue="Application.TreeMain" />
+      <item itemvalue="Application.AVLTreeView" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.TestAVLTree" />
+        <item itemvalue="Application.AVLTreeView" />
         <item itemvalue="Application.MinimumSpanningTreeDemo" />
         <item itemvalue="Application.TreeMain" />
         <item itemvalue="Application.ShortestPathDemo" />
@@ -176,7 +180,20 @@
     </task>
     <servers />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.IllegalArgumentException" package="java.lang" />
+          <option name="timeStamp" value="4" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/LCA_and_ShortestPath$AVLTreeView.ic" NAME="AVLTreeView Coverage Results" MODIFIED="1654894269311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>AVLTree.*</FILTER>
+    </SUITE>
     <SUITE FILE_PATH="coverage/LCA_and_ShortestPath$TestAVLTree.ic" NAME="TestAVLTree Coverage Results" MODIFIED="1654803446326" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>AVLTree.*</FILTER>
     </SUITE>

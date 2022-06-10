@@ -36,15 +36,15 @@ public class AVLTreeUtil {
                         .edgeSupplier(SupplierUtil.createIntegerSupplier())
                         .buildGraphBuilder();
 
-        tree.addEdge( "V44", "V22");
-        tree.addEdge( "V44", "V88");
-        tree.addEdge( "V22", "V11");
-        tree.addEdge( "V22", "V33");
-        tree.addEdge( "V88", "V66");
-        tree.addEdge( "V88", "V99");
-        tree.addEdge( "V66", "V55");
-        tree.addEdge( "V66", "V77");
-        tree.addEdge( "V99", "V100");
+        tree.addEdge( "V444", "V222");
+        tree.addEdge( "V444", "V888");
+        tree.addEdge( "V222", "V111");
+        tree.addEdge( "V222", "V333");
+        tree.addEdge( "V888", "V666");
+        tree.addEdge( "V888", "V991");
+        tree.addEdge( "V666", "V555");
+        tree.addEdge( "V666", "V777");
+        tree.addEdge( "V991", "V999");
 
         return tree.build();
     }
@@ -52,35 +52,15 @@ public class AVLTreeUtil {
         DelegateForest<String,Integer> graph = new DelegateForest<>();
 
         AVLTree.AVLNode<String> node = (AVLTree.AVLNode<String>) avlTree.addMin("V11");
-        System.out.println("node: " + node.getValue()  + " " + node.toString());
-
         AVLTree.AVLNode<String> node2 = (AVLTree.AVLNode<String>) avlTree.addMin("V22");
-        System.out.println("node2: " + node2.getValue()  + " " + node2.toString());
-
         AVLTree.AVLNode<String> node3 = (AVLTree.AVLNode<String>) avlTree.addMin("V33");
-        System.out.println("node3: " + node3.getValue()  + " " + node3.toString());
-
         AVLTree.AVLNode<String> node4 = (AVLTree.AVLNode<String>) avlTree.addMin("V44");
-        System.out.println("node4: " + node4.getValue()  + " " + node4.toString());
-        System.out.println(avlTree.toString());
         AVLTree.AVLNode<String> node5 = (AVLTree.AVLNode<String>) avlTree.addMin("V55");
-        System.out.println("node5: " + node5.getValue()  + " " + node5.toString());
-
         AVLTree.AVLNode<String> node6 = (AVLTree.AVLNode<String>) avlTree.addMin("V66");
-        System.out.println("node6: " + node6.getValue()  + " " + node6.toString());
-
         AVLTree.AVLNode<String> node7 = (AVLTree.AVLNode<String>) avlTree.addMin("V77");
-        System.out.println("node7: " + node7.getValue()  + " " + node7.toString());
         AVLTree.AVLNode<String> node8 = (AVLTree.AVLNode<String>) avlTree.addMin("V88");
-
         AVLTree.AVLNode<String> node9 = (AVLTree.AVLNode<String>) avlTree.addMin("V99");
-        System.out.println("node9: " + node9.getValue()  + " " + node9.toString());
-
         AVLTree.AVLNode<String> node10 = (AVLTree.AVLNode<String>) avlTree.addMin("v100");
-        System.out.println("node10: " + node10.getValue()  + " " + node10.toString());
-
-        System.out.println(avlTree.toString());
-
 
         graph.addVertex("V44");
         graph.addEdge("V44V22".hashCode(), "V44", "V22");
