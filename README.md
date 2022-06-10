@@ -1,2 +1,2 @@
 # LCA_and_ShortestPath
-Create and test AVL, expression trees and test LCA algorithms
+AVL Tree add, delete using tree minimum value, tree maximum or split and merge subtrees
