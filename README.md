@@ -19,44 +19,7 @@ AVLTree Author @Timofey Chudakov from JGraphT.
 ![ResultsTestSingleNodeAdd](https://user-images.githubusercontent.com/54422342/173126455-7f9bc6b1-6279-400b-ba2e-7f72b3e38e30.jpg)
 
 ## Inserting 15 to tree ( level order print ): 20, 4, 26, 3, 9, 21, 30, 2, 7, 11
-            // insert 15:
-            //       __20+__                _20++_                  __20++_                ___9___
-            //      /       \              /      \                /       \              /       \
-            //     4         26    =>     4-       26    =>       9+        26    =>     4+      __20__
-            //    / \       /  \         / \      /  \           / \       /  \         / \     /      \
-            //   3+  9    21    30      3+  9-  21    30        4+  11-  21    30      3+  7  11-       26
-            //  /   / \                /   / \                 / \   \                /         \      /  \
-            // 2   7   11             2   7   11-             3+  7   15             2           15  21    30
-            //                                 \            /
-            //                                  15         2
-            tree = new AVLTree<Integer>();
-            tree.addMin(30);
-            tree.addMin(26);
-            tree.addMin(21);
-            tree.addMin(20);
-            tree.addMin(11);
-            tree.addMin(9);
-            tree.addMin(7);
-            tree.addMin(4);
-            tree.addMin(3);
-            tree.addMin(2);
-            assert tree.getSize() == 10;
-            assert tree.getRoot().getValue() == 20;
+![caseInsert15RightDoubleHeavy](https://user-images.githubusercontent.com/54422342/173217422-acd1fccd-ef28-47ae-8157-722843398c16.jpg)
 
-            tree.insert(15);
-            assert tree.getSize() == 11;
-            assert tree.getRoot().getValue() == 9;
-
-            iterator = tree.iterator();
-            count = 1;
-            while (iterator.hasNext()) {
-                int currentValue = iterator.next();
-                if (count == 5) {
-                    assert currentValue == tree.getRoot().getValue();
-                }
-                if (count++ == 7) {
-                    assert currentValue == 15;
-                }
-            }
-
+ 
 
