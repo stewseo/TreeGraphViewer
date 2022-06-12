@@ -18,7 +18,7 @@ AVLTree Author @Timofey Chudakov from JGraphT.
 ## Expected and Actual Result from adding single node to empty tree: 
 ![ResultsTestSingleNodeAdd](https://user-images.githubusercontent.com/54422342/173126455-7f9bc6b1-6279-400b-ba2e-7f72b3e38e30.jpg)
 
-## Inserting 15 to tree ( level order print ): 20, 4, 26, 3, 9, 21, 30, 2, 7, 11
+## Inserting value with split, add max, merge to cause double right rotation on tree ( level order print ): 20, 4, 26, 3, 9, 21, 30, 2, 7, 11
 ![caseInsert15RightDoubleHeavy](https://user-images.githubusercontent.com/54422342/173217422-acd1fccd-ef28-47ae-8157-722843398c16.jpg)
 
  
