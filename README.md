@@ -2,7 +2,7 @@
 ### AVL Tree add, delete using tree minimum value, tree maximum or split _and_ merge subtrees
 AVLTree Author @Timofey Chudakov from JGraphT.
 
-## Default Tree inorder V11, V22, V33, V44, V55, V66, V77, V88, V91, V99:
+## Default Tree level order: V44, V22, V88, V11, V33, V66, V91, V55, V77, V99
 ![AVLTreeDefaultView](https://user-images.githubusercontent.com/54422342/173126062-152b807a-3698-4619-9557-9730eb95d861.jpg)
 
 ## Inserting random nodes: V47, V42, V67, V54, V95, V59, V49, V56, V42, V72 
@@ -18,7 +18,7 @@ AVLTree Author @Timofey Chudakov from JGraphT.
 ## Expected and Actual Result from adding single node to empty tree: 
 ![ResultsTestSingleNodeAdd](https://user-images.githubusercontent.com/54422342/173126455-7f9bc6b1-6279-400b-ba2e-7f72b3e38e30.jpg)
 
-## Inserting 15 to tree ( inorder print): 2 3 4 7 9 11 20 21 26 30
+## Inserting 15 to tree ( level order print ): 20, 4, 26, 3, 9, 21, 30, 2, 7, 11
             // insert 15:
             //       __20+__                _20++_                  __20++_                ___9___
             //      /       \              /      \                /       \              /       \
