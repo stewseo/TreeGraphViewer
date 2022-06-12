@@ -28,7 +28,6 @@ import java.awt.event.ItemEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static AVLTree.LayoutHelper.getCombos;
@@ -45,7 +44,7 @@ public class AVLTreeView extends JPanel {
 
     Dimension preferredSize = new Dimension(400, 400);
 
-    AVLTreeUtil avlTreeUtil;
+    GraphUtil avlTreeUtil;
 
     Function<Integer, String> stringer =
             e -> "Edge:" + graph.getEdgeSource(e) + "-" + graph.getEdgeTarget(e);
@@ -65,7 +64,7 @@ public class AVLTreeView extends JPanel {
 
     public AVLTreeView() {
         avlTree = getAvlTree();
-        avlTreeUtil = new AVLTreeUtil();
+        avlTreeUtil = new GraphUtil();
         if(avlTree.getSize() == 0) {
             createTreeView(avlTreeUtil.createForest());
         }
@@ -113,11 +112,10 @@ public class AVLTreeView extends JPanel {
                         .vertexShapeFunction(vertexShapeFunction)
                         .build());
 
-        JButton addNode = new JButton("Add Node");
+        JButton addNode = new JButton("Add Max");
         addNode.addActionListener(e -> addNode());
 
-
-        JButton deleteNode = new JButton("Delete Node");
+        JButton deleteNode = new JButton("Delete Max");
         deleteNode.addActionListener(e -> deleteNode());
 
         vv.setVertexToolTipFunction(Object::toString);
@@ -149,8 +147,8 @@ public class AVLTreeView extends JPanel {
                     }
                 });
 
-        JButton junctionNode = new JButton("Button Help");
-        junctionNode.addActionListener(e -> JOptionPane.showMessageDialog((JComponent) e.getSource(), instructions, "Button Help", JOptionPane.PLAIN_MESSAGE));
+        JButton splitBefore = new JButton("Split Before");
+        splitBefore.addActionListener(e -> JOptionPane.showMessageDialog((JComponent) e.getSource(), instructions, "Button Help", JOptionPane.PLAIN_MESSAGE));
 
         Dimension space = new Dimension(20, 20);
         Box controls = Box.createHorizontalBox();
@@ -185,7 +183,7 @@ public class AVLTreeView extends JPanel {
         controls.add(modePanel);
         controls.add(Box.createRigidArea(space));
 
-        controls.add(junctionNode);
+        controls.add(splitBefore);
         controls.add(Box.createVerticalGlue());
         add(controls, BorderLayout.SOUTH);
     }

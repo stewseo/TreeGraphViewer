@@ -86,7 +86,7 @@
       <recent name="Performance" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.AVLTreeView">
+  <component name="RunManager" selected="Application.TreeMain">
     <configuration name="AVLTreeView" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="AVLTree.AVLTreeView" />
       <module name="LCA_and_ShortestPath.app.main" />
@@ -112,12 +112,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ShortestPathDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ShortestPath.ShortestPathDemo" />
+    <configuration name="ShowLayoutsWithGreedyVertexColoring" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="AVLTree.ShowLayoutsWithGreedyVertexColoring" />
       <module name="LCA_and_ShortestPath.app.main" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="ShortestPath.*" />
+          <option name="PATTERN" value="AVLTree.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -139,12 +139,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ExpressionTree.main" />
+    <configuration name="TwoModelDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="AVLTree.TwoModelDemo" />
       <module name="LCA_and_ShortestPath.app.main" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="ExpressionTree.*" />
+          <option name="PATTERN" value="AVLTree.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -153,19 +153,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.main" />
       <item itemvalue="Application.MinimumSpanningTreeDemo" />
-      <item itemvalue="Application.ShortestPathDemo" />
       <item itemvalue="Application.TreeMain" />
       <item itemvalue="Application.AVLTreeView" />
+      <item itemvalue="Application.TwoModelDemo" />
+      <item itemvalue="Application.ShowLayoutsWithGreedyVertexColoring" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.ShowLayoutsWithGreedyVertexColoring" />
+        <item itemvalue="Application.TwoModelDemo" />
         <item itemvalue="Application.AVLTreeView" />
         <item itemvalue="Application.MinimumSpanningTreeDemo" />
         <item itemvalue="Application.TreeMain" />
-        <item itemvalue="Application.ShortestPathDemo" />
-        <item itemvalue="Application.main" />
       </list>
     </recent_temporary>
   </component>

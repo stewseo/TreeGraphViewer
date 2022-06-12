@@ -4,14 +4,12 @@ import BinaryTree.BinaryNode;
 import BinaryTree.BinarySearchTree;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /*
 Implementation of JUNG and JGraphT's AVL tree with Module12 BST
 AVLTree Author:
  * @Timofey Chudakov
-BinarySearchTree Author:
- * @author Frank M. Carrano
- * @author Timothy M. Henry
  */
 public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 
@@ -33,6 +31,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
         if(value.compareTo(getMin().getValue()) < 0 ){
             return addMin(value);
         }
+
         AVLNode<T> newNode = new AVLNode<T>(value);
         insertNode(newNode);
         return newNode;
@@ -56,7 +55,9 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
                 } else {
                     curr = stack.pop();
                     if (curr.getValue().compareTo(newNode.getValue()) > 0) {
+
                         AVLTree<T> right = splitBefore(curr);
+
                         addMax(newNode.getValue());
                         mergeAfter(right);
                         break;
@@ -76,14 +77,15 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 
     public void addMaxNode(AVLNode<T> newMax) {
         registerModification();
-
         if (isEmpty()) {
             virtualRoot.left = newMax;
             newMax.parent = virtualRoot;
+
         } else {
             AVLNode<T> max = getMax();
             max.setRightChild(newMax);
             balance(max);
+
         }
     }
 
@@ -98,6 +100,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
         if (isEmpty()) {
             virtualRoot.left = newMin;
             newMin.parent = virtualRoot;
+
         }
         else {
             AVLNode<T> min = getMin();
@@ -107,6 +110,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
     }
 
     public AVLTree<T> splitBefore(AVLNode<T> node) {
+
         registerModification();
         AVLNode<T> predecessor = predecessor(node);
 
@@ -114,97 +118,74 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
         if (predecessor == null) {
             AVLTree<T> tree = new AVLTree<T>();
             swap(tree);
-            System.out.println("node: " + node.getValue() + " predeccsor is null. SWAP with tree. tree: " + tree.getRoot().getValue());
             return tree;
         }
-        System.out.println("SENDING PREDECESSOR TO SPLIT AFTER: " + predecessor.getValue());
         return splitAfter(predecessor);
     }
-
+    // cut immediate family, balance  to @param node = predecessor
     public AVLTree<T> splitAfter(AVLNode<T> node) {
         registerModification();
         AVLNode<T> parent = node.getParent();
         boolean nextMove = node.isLeftChild();
         AVLNode<T> left = node.getLeft();
         AVLNode<T> right = node.getRight();
-
         node.parent.substituteChild(node, null);
-
         node.reset();
-        System.out.println("\nSPLITTING AFTER PARAMETER NODE: " + node.getValue());
         if (left != null) {
-            System.out.print("Left value: " +left.getValue() + " Before making null, left parent: " + left.parent.getValue());
             left.parent = null;
         }
         if (right != null) {
-            System.out.print(" Right value: " +right.getValue() + " Before making null, right parent: " + right.parent.getValue());
             right.parent = null;
         }
 
         if (left == null) {
             left = node;
-            System.out.print("\nPredecessor's left is null. left is now: " + left.getValue() + " ");
         }
         else {
 
-            // insert node as a left subtree max
             AVLNode<T> t = left;
-            System.out.print("\nTraversing for Successor-> ");
             while (t.right != null) {
-                System.out.print("t: " + t.getValue() + ", ");
                 t = t.right;
             }
-            System.out.println("Found Successor. Referencing path: " + t.getValue() + ".setRightChild( " + node.getValue() + ")");
             t.setRightChild(node);
-
             while (t != left) {
-                System.out.print("\nBalancing Successor, substituting child of successor's parent ");
+                StringBuilder sb = new StringBuilder();
                 AVLNode<T> p = t.parent;
-                System.out.print(" p.substituteChild( " + t.getValue() + ", balanceNode(" +  t.getValue()+ ")");
-                p.substituteChild(t, balanceNode(t));
+                AVLNode<T> balancedP = balanceNode(t);
+
+
+                p.substituteChild(t, balancedP);
                 t = p;
-                System.out.println("\nreferencing t after substituting child. t = p = " + p.getValue());
+                sb.append(t.getValue());
+                System.out.println(sb.toString());
             }
             left = balanceNode(left);
-            System.out.println("Balance Node: " + left.getValue());
         }
-
-        T v = null;
-        if(right != null) {
-            v = right.getValue();
-        }
-        System.out.println(" Send left, right, parent, nextMove to split( " + left.getValue() +  ", " + v + ", " + parent.getValue() +", "+ nextMove);
-
+        /* send children parent unlinked to split */
         return split(left, right, parent, nextMove);
     }
 
     private AVLTree<T>split(AVLNode<T> left, AVLNode<T>  right, AVLNode<T>  p, boolean leftMove) {
-        System.out.println();
+        T v = null;
+        if(right != null) {v = right.getValue();}
+
         while (p != virtualRoot) {
             boolean nextMove = p.isLeftChild();
             AVLNode<T> nextP = p.getParent();
-
             p.getParent().substituteChild(p, null);
             p.parent = null;
 
             if (leftMove) {
                 String rightVal = right == null ? null : right.getValue().toString();
-                System.out.print("right before merge: " + rightVal);
-//                System.out.println("right = merge(p, right, p.right) p: " + p.getValue() + " right: " + right.getValue() + " p.right: " + rightVal);
+                String pRightVal = p.right == null ? null : p.right.getValue().toString();
                 right = merge(p, right, p.right);
-                System.out.println(" right after merge: " + right.getValue());
             } else {
                 String leftVal = p.left == null ? null : p.left.getValue().toString();
-                System.out.print("left before merge: " + leftVal);
-//                System.out.println("left = merge(p, p.left, left) p: " + p.getValue() + " p.left:  " + p.left.getValue() + " left: " + leftVal);
                 left = merge(p, p.left, left);
-                System.out.println(" left after merge: " + left.getValue());
             }
             p = nextP;
             leftMove = nextMove;
         }
-
-        System.out.println("make root " + left.getValue());
         makeRoot(left);
 
         return new AVLTree<>(right);
@@ -213,7 +194,11 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 
     private void makeRoot(AVLNode<T> node) {
         virtualRoot.left = node;
+        if(node == null) {
+            System.out.println("null");
+        }
         if (node != null) {
+            System.out.println("root: " + node.getValue());
             node.subtreeMax.successor = null;
             node.subtreeMin.predecessor = null;
             node.parent = virtualRoot;
@@ -233,9 +218,11 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 
         AVLTree.AVLNode<T> junctionNode = tree.removeMin();
         AVLTree.AVLNode<T> treeRoot = tree.getRoot();
-        tree.clear();
 
+        tree.clear();
         makeRoot(merge(junctionNode, getRoot(), treeRoot));
+
+
     }
 
     public void mergeBefore(AVLTree<T> tree) {
@@ -246,6 +233,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 
     private void swap(AVLTree<T> tree) {
         AVLNode<T> t = virtualRoot.left;
+
         makeRoot(tree.virtualRoot.left);
         tree.makeRoot(t);
     }
@@ -258,10 +246,15 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
      * @return the root of the resulting tree
      */
     private AVLNode<T> merge(AVLNode<T> junctionNode, AVLNode<T> left, AVLNode<T> right) {
+//        System.out.println("        AVLNode<T> merge(AVLNode<T> junctionNode, AVLNode<T> left, AVLNode<T> right) {} @param junctionNode, left, right");
+
         if (left == null && right == null) {
             junctionNode.reset();
             return junctionNode;
-        } else if (left == null) {
+        }
+
+        else if (left == null) {
+            var rightLeftValue = right.left == null ? null: right.left.getValue();
             right.setLeftChild(merge(junctionNode, left, right.left));
             return balanceNode(right);
         } else if (right == null) {
@@ -271,6 +264,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
             left.setRightChild(merge(junctionNode, left.right, right));
             return balanceNode(left);
         } else if (right.getHeight() > left.getHeight() + 1) {
+            var rightLeftValue = right.left == null ? null: right.left.getValue();
             right.setLeftChild(merge(junctionNode, left, right.left));
             return balanceNode(right);
         } else {
@@ -288,16 +282,16 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
         AVLTree.AVLNode<T> min = getMin();
         // min.parent != null
         if (min.parent == virtualRoot) {
+            var minRightValue = min.right == null?null:min.right.getValue();
             makeRoot(min.right);
         } else {
+            var minRightValue = min.right == null?null:min.right.getValue();
             min.parent.setLeftChild(min.right);
         }
-
         balance(min.parent);
 
         return min;
     }
-
 
     public AVLNode<T> removeMax() {
         registerModification();
@@ -308,6 +302,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
         if (max.parent == virtualRoot) {
             makeRoot(max.left);
         } else {
+            String maxLeft = max.left == null ? null : max.left.getValue().toString();
             max.parent.setRightChild(max.left);
         }
         balance(max.parent);
@@ -316,30 +311,29 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
 
 
     private AVLNode<T> rotateRight(AVLNode<T> node) {
+//        System.out.println("\n  AVLNode<T> rotateRight(AVLNode<T> node) {} @param node being rotated right: " + node.getValue());
         AVLNode<T> left = node.left;
         left.parent = null;
-
+        var leftRightValue = left.right == null ? null : left.right.getValue();
         node.setLeftChild(left.right);
         left.setRightChild(node);
 
         node.updateHeightAndSubtreeSize();
         left.updateHeightAndSubtreeSize();
-
         return left;
     }
 
 
     private AVLNode<T> rotateLeft(AVLNode<T> node) {
+//        System.out.println("\n  AVLNode<T> rotateLeft(AVLNode<T> node) {} @param node being rotated left:  " + node.getValue());
         AVLNode<T> right = node.right;
         right.parent = null;
-
+        var rightLeftValue = right.left == null?null:right.left.getValue();
         node.setRightChild(right.left);
-
         right.setLeftChild(node);
-
         node.updateHeightAndSubtreeSize();
-        right.updateHeightAndSubtreeSize();
 
+        right.updateHeightAndSubtreeSize();
         return right;
     }
 
@@ -359,7 +353,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
     }
 
 
-// Performs a node balancing on the path from {@code node} up until the root
+// Performs a node balancing on the path from the @param node up until the root
     private void balance(AVLNode<T> node) {
         balance(node, virtualRoot);
     }
@@ -374,34 +368,25 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
         }
         else {
             p.substituteChild(node, balanceNode(node));
-        }
 
+        }
         balance(p, stop);
     }
-
 
     private AVLNode<T> balanceNode(AVLNode<T> node) {
         node.updateHeightAndSubtreeSize();
         if (node.isLeftDoubleHeavy()) {
-            System.out.print(node.getValue() + " is Left Double Heavy ");
             if (node.left.isRightHeavy()) {
-                System.out.print(" left child: " + node.left.getValue() + " is right heavy");
                 node.setLeftChild(rotateLeft(node.left));
-                System.out.print(" set node: " + node.getValue() + "'s left child to post left rotation node: " + node.left.getValue() + " ");
 
             }
-            System.out.println("Rotate node: " + node.getValue() + " Right ");
             rotateRight(node);
             return node.parent;
         }
         else if (node.isRightDoubleHeavy()) {
-            System.out.print(node.getValue() + " is Right Double Heavy ");
             if (node.right.isLeftHeavy()) {
-                System.out.print(" right child: " + node.right.getValue() + " is left heavy");
                 node.setRightChild(rotateRight(node.right));
-                System.out.print(" set node: " + node.getValue() + "'s right child to post right rotation node: " + node.right.getValue() + " ");
             }
-            System.out.println("Rotate node: " + node.getValue() + " Left ");
             rotateLeft(node);
             return node.parent;
         }
@@ -437,6 +422,43 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
             builder.append(node.toString()).append("\n");
         }
         return builder.toString();
+    }
+
+    public List<T> getDFS(AVLTree.AVLNode<T> start, String order) {
+        List<T> values = new ArrayList<>();
+        if (order.equalsIgnoreCase("inorder")) {
+            Stack<AVLTree.AVLNode<T>> stack = new Stack<>();
+            AVLTree.AVLNode<T> curr = getRoot();
+            while (!stack.empty() || curr != null) {
+                while(curr != null) {
+                    stack.push(curr);
+                    curr = curr.left;
+                }
+                curr = stack.pop();
+                values.add(curr.getValue());
+                curr = curr.right;
+            }
+        }return values;
+    }
+
+
+    public List<T> getBFS(AVLTree.AVLNode<T> start) {
+        final Queue<AVLTree.AVLNode<T>> queue = new ArrayDeque<AVLTree.AVLNode<T>>();
+        int count = 0;
+        List<T> values = new ArrayList<>();
+        AVLTree.AVLNode<T> node = start;
+        while (node != null) {
+            values.add(node.value);
+            if (node.left != null)
+                queue.add(node.left);
+            if (node.right != null)
+                queue.add(node.right);
+            if (!queue.isEmpty())
+                node = queue.remove();
+            else
+                node = null;
+        }
+        return values;
     }
 
 
@@ -595,10 +617,8 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
         }
 
         void updateHeightAndSubtreeSize() {
-//            System.out.print("previous height: " + this.height + " previous subtree size: " + this.subtreeSize);
             height = Math.max(getLeftHeight(), getRightHeight()) + 1;
             subtreeSize = getLeftSubtreeSize() + getRightSubtreeSize() + 1;
-            System.out.println(" updated height: " + this.height + " updated subtree size: " + this.subtreeSize);
 
         }
 
@@ -705,15 +725,19 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
                 successor = null;
                 subtreeMax = this;
             }
+
         }
 
         // substitute either left or right child with parent
         public void substituteChild(AVLNode<T> prevChild, AVLNode<T> newChild) {
             assert left == prevChild || right == prevChild;
             assert !(left == prevChild && right == prevChild);
+            String value = newChild == null? null:newChild.getValue().toString();
             if (left == prevChild) {
+
                 setLeftChild(newChild);
             } else {
+
                 setRightChild(newChild);
             }
         }

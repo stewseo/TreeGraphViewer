@@ -14,10 +14,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class AVLTreeUtil {
+public class GraphUtil {
     private AVLTree<String> avlTree;
 
-    public AVLTreeUtil() {
+    public GraphUtil() {
         avlTree = new AVLTree<String>();
     }
 
@@ -125,5 +125,83 @@ public class AVLTreeUtil {
             }
         }
         return new ArrayList<>(nodes);
+    }
+    /* @author tomnelson of jungrapht */
+    public static Graph<String, Integer> getOneComponentGraph() {
+
+        Graph<String, Integer> graph =
+                GraphTypeBuilder.<String, Integer>forGraphType(DefaultGraphType.simple())
+                        .edgeSupplier(SupplierUtil.createIntegerSupplier())
+                        .buildGraph();
+
+        // clique
+        for (int i = 1; i <= 10; i++) {
+            for (int j = i + 1; j <= 10; j++) {
+                String i1 = "" + i;
+                String i2 = "" + j;
+                graph.addVertex(i1);
+                graph.addVertex(i2);
+                graph.addEdge(i1, i2);
+            }
+        }
+
+        //partial clique
+        for (int i = 11; i <= 20; i++) {
+            for (int j = i + 1; j <= 20; j++) {
+                if (Math.random() > 0.6) {
+                    continue;
+                }
+                String i1 = "" + i;
+                String i2 = "" + j;
+                graph.addVertex(i1);
+                graph.addVertex(i2);
+                graph.addEdge(i1, i2);
+            }
+        }
+        Iterator<String> vertexIt = graph.vertexSet().iterator();
+        String current = vertexIt.next();
+        while (vertexIt.hasNext()) {
+            String next = vertexIt.next();
+            graph.addEdge(current, next);
+        }
+
+        return graph;
+    }
+
+    public static Graph<String, Integer> createDirectedAcyclicGraph(
+            int layers, int maxVerticesPerLayer, double linkprob) {
+        return createDirectedAcyclicGraph(
+                layers, maxVerticesPerLayer, linkprob, System.currentTimeMillis());
+    }
+
+    public static Graph<String, Integer> createDirectedAcyclicGraph(
+            int layers, int maxVerticesPerLayer, double linkprob, long randomSeed) {
+        Random random = new Random(randomSeed);
+        Graph<String, Integer> graph =
+                GraphTypeBuilder.<String, Integer>forGraphType(DefaultGraphType.directedMultigraph())
+                        .edgeSupplier(SupplierUtil.createIntegerSupplier())
+                        .buildGraph();
+
+        Set<String> previousLayers = new HashSet<>();
+        Set<String> inThisLayer = new HashSet<>();
+        for (int i = 0; i < layers; i++) {
+
+            int verticesThisLayer = (int) (random.nextDouble() * maxVerticesPerLayer) + 1;
+            for (int j = 0; j < verticesThisLayer; j++) {
+                String v = i + ":" + j;
+                graph.addVertex(v);
+                inThisLayer.add(v);
+                // for each previous vertex...
+                for (String v2 : previousLayers) {
+                    if (random.nextDouble() < linkprob) {
+                        graph.addEdge(v2, v);
+                    }
+                }
+            }
+
+            previousLayers.addAll(inThisLayer);
+            inThisLayer.clear();
+        }
+        return graph;
     }
 }

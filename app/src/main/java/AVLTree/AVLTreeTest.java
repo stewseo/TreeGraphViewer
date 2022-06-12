@@ -1,6 +1,7 @@
 package AVLTree;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -153,10 +154,13 @@ public class AVLTreeTest {
 
         public void testInsert() {
             AVLTree<Integer> tree = new AVLTree<Integer>();
-            tree.addMax(20);
-            tree.addMin(4);
-            assert tree.getSize() == 2;
-            assert tree.getRoot().getValue() == 20;
+//            System.out.println(" adding 20");
+//            tree.addMax(20);
+//            printBFSandDFSInorder(tree);
+//            System.out.println(" adding 4");
+//            tree.addMin(4);
+//            printBFSandDFSInorder(tree);
+
 
             // insert 15:
             //   20+      20++         20++      15
@@ -164,20 +168,19 @@ public class AVLTreeTest {
             // 4     => 4-     =>   15+     => 4    20
             //           \         /
             //            15      4
-            AVLTree.AVLNode<Integer> added = tree.insert(15);
-            assert tree.getSize() == 3;
-            assert added.getValue() == 15;
-            assert tree.getRoot().getValue().equals(added.getValue());
 
-            Iterator<Integer> iterator = tree.iterator();
-            int count = 1;
-            while (iterator.hasNext()) {
-                int currentValue = iterator.next();
-                if (count++ == 2) {
-                    assert currentValue == 15;
-                    assert currentValue == tree.getRoot().getValue();
-                }
-            }
+
+            AVLTree<Integer> previousTree = tree;
+            //current tree, expected size, expected root value
+//            validateSizeAndRoot(tree, 2, 20);
+//            System.out.println("\nadding 15");
+//            AVLTree.AVLNode<Integer> added = tree.insert(15);
+            //prints inorder and level order traversals for tree before and after size change
+//            printBFSandDFSInorder(tree);
+//            validateSizeAndRoot(tree, 3, 15);
+            //current tree, expected root location, expected added value node location, added value
+//            validateTraversalOrder(tree, 2, 2, 15);
+
             // insert 15 (not showing the split merge steps):
             //     20+          20++           20++         9
             //    /  \         /  \           /  \         / \
@@ -186,73 +189,182 @@ public class AVLTreeTest {
             // 3   9        3   9-         4+  15       3  15    26
             //                   \       /
             //                    15    3
-            tree = new AVLTree<Integer>();
-            tree.addMax(20);
-            tree.addMax(26);
-            tree.addMin(9);
-            tree.addMin(4);
-            tree.addMin(3);
-            assert tree.getSize() == 5;
-            assert tree.getRoot().getValue() == 20;
+//            tree = new AVLTree<Integer>();
+//            System.out.print("\n\n Add max 20");
+//            tree.addMax(20);
+//            System.out.print("\n\n Add max 26");
+//            tree.addMax(26);
+//            System.out.print("\n\n Add min 9");
+//            tree.addMin(9);
+//            System.out.print("\n\n Add min 4");
+//            tree.addMin(4);
+//            System.out.print("\n\n Add min 3");
+//            tree.addMin(3);
+//
+//            previousTree = tree;
+//            validateSizeAndRoot(previousTree,5, 20);
 
-            tree.insert(15);
-            assert tree.getSize() == 6;
-            assert tree.getRoot().getValue() == 9;
+//            tree.insert(15);
+//            printBFSandDFSInorder(tree, previousTree);
+//            validateSizeAndRoot(tree, 6, 9);
+//
+//            validateTraversalOrder(tree, 3, 4, 15);
 
-            iterator = tree.iterator();
-            count = 1;
-            while (iterator.hasNext()) {
-                int currentValue = iterator.next();
-                if (count == 3) {
-                    assert currentValue == tree.getRoot().getValue();
-                }
-                if (count++ == 4) {
-                    assert currentValue == 15;
-                }
+            // insert 15 to tree bfs traversal: 20, 4, 26, 3, 9, 21, 30, 2, 7, 11
+            // splitBefore(20):
+            // current tree:            right reference:
+            //
+            //         4                   26
+            //       /   \               /    \
+            //      3      9            21     30
+            //     / \      \          /
+            //    2   7      11       20
 
-            }
-            // insert 15:
-            //       __20+__                _20++_                  __20++_                ___9___
-            //      /       \              /      \                /       \              /       \
-            //     4         26    =>     4-       26    =>       9+        26    =>     4+      __20__
-            //    / \       /  \         / \      /  \           / \       /  \         / \     /      \
-            //   3+  9    21    30      3+  9-  21    30        4+  11-  21    30      3+  7  11-       26
-            //  /   / \                /   / \                 / \   \                /         \      /  \
-            // 2   7   11             2   7   11-             3+  7   15             2           15  21    30
-            //                                 \            /
-            //                                  15         2
-            tree = new AVLTree<Integer>();
-            tree.addMin(30);
-            tree.addMin(26);
-            tree.addMin(21);
-            tree.addMin(20);
-            tree.addMin(11);
-            tree.addMin(9);
-            tree.addMin(7);
-            tree.addMin(4);
-            tree.addMin(3);
-            tree.addMin(2);
-            assert tree.getSize() == 10;
-            assert tree.getRoot().getValue() == 20;
+            // addMax(15):           mergeAfter(right):
+            //                     before first right rotation:         after first right rotation:       after second right rotation:
+            //                    bfs:4,3,20,2,9,26,7,11,21,30,15      bfs:4,3,9,2,7,20,11,26,15,21,30   bfs:9,4,20,3,7,11,26,2,15,21,30
+            //
+            //         4                  __4++__                           __4+__                      ___9___
+            //       /   \               /       \                        /      \                     /       \
+            //      3      9    =>      3        20          =>          3        9                   4        20
+            //     / \      \          / \         \                    / \        \                 /  \     /   \
+            //    2   7      11       2   9         26                 2   7        20              3    7  11     26
+            //                 \         / \       /  \                      \        \            /          \   /  \
+            //                  15      7   11    21   30                     11       26         2           15 21   30
+            //                                \                                 \     /  \
+            //                                 15                                15  21   30
+//            tree = new AVLTree<Integer>();
+//            int[] caseRightDoubleHeavy = new int[]{30,26,21,20,11,9,7,4,3,2};
+//            Arrays.stream(caseRightDoubleHeavy).forEach(tree::addMin);
+//            //@param tree, expected tree.size, expected tree.getRoot() value
+//            validateSizeAndRoot(tree, 10, 20);
+//            tree.insert(15);
+//            validateSizeAndRoot(tree, 11, 9);
+//            //@param tree, inserted value, expected BFS root location, expected BFS added node location
+//            validateTraversalOrder(tree, 15, 1, 9);
 
-            tree.insert(15);
-            assert tree.getSize() == 11;
-            assert tree.getRoot().getValue() == 9;
+            //   20+      20++        20++      8
+            //  /        /           /         / \
+            // 4     => 4-     =>   8+     => 4   20
+            //           \         /
+            //            8       4
+//            tree = new AVLTree<Integer>();
+//            int[] twoA = new int[]{20,4};
+//            Arrays.stream(twoA).forEach(tree::addMin);
+//            validateSizeAndRoot(tree, 2, 20);
+//            tree.insert(8);
+//            validateSizeAndRoot(tree, 3, 8);
 
-            iterator = tree.iterator();
-            count = 1;
-            while (iterator.hasNext()) {
-                int currentValue = iterator.next();
-                if (count == 5) {
-                    assert currentValue == tree.getRoot().getValue();
-                }
-                if (count++ == 7) {
-                    assert currentValue == 15;
-                }
-            }
+            //bfs 4, 3, 7, 2      right bfs 20, 11, 26, 9, 21, 30
+            //        4                    20
+            //      /   \                 /  \
+            //     3     7               11   26
+            //    /                     / \  /  \
+            //   2                     9    21   30
+
+            //                      Left Double Heavy
+            // addMax(8):           mergeAfter(right):
+            //                    bfs:20,9,26,4,11,21,30,3,7,2
+            //         4                  __20++__                         __4+__                       ___9___
+            //       /   \               /       \                        /      \                     /       \
+            //      3      7   =>       9        26          =>          3        9                   4        20
+            //     / \      \          / \         \                    / \        \                 /  \     /   \
+            //    2   7      8        2   9         26                 2   7        20              3    7  11     26
+            //                            / \       /  \                      \        \            /          \   /  \
+            //                           7   11    21   30                     11       26         2           15 21   30
+            //                                \                                 \      /  \
+            //                                 15                                15   21   30
+
+//            tree = new AVLTree<Integer>();
+//            int[] caseRightDoubleHeavy = new int[]{30,26,21,20,11,9,7,4,3,2};
+//            Arrays.stream(caseRightDoubleHeavy).forEach(tree::addMin);
+//            validateSizeAndRoot(tree, 10, 20);
+//            tree.insert(8);
+//            validateSizeAndRoot(tree, 11, 9);
+//            validateTraversalOrder(tree, 15, 1, 9);
+
+            //    2          2            4
+            //   / \          \          / \
+            //  1   4    =>    4    =>  2   5
+            //     / \        / \        \
+            //    3   5      3   5        3
+//            tree = new AVLTree<Integer>();
+//            int[] caseOneDelete = new int[]{1,2,3,4,5};
+//            Arrays.stream(caseOneDelete).forEach(tree::addMax);
+//            System.out.println("REMOVING");
+//            tree.removeMin();
+
+            //bfs 8,4,A,2,6,9,C,1,3,5,7,B,D   bfs 8,4,A,2,6,9,C,3,5,7,B,D  bfs 8,4,A,3,6,9,C,5,7,B,D
+            // removeMin() (1)                 removeMin() (2)              removeMin() (3) -> double right heavy
+            //         ____8____                   ___8___                 ___8___
+            //        /          \                /       \               /       \
+            //     __4__        __A__            4         A             4         A
+            //    /     \       /    \         /   \      /  \          / \       / \
+            //   2       6     9     _C_ =>   2     6    9    C    => 3    6     9   C
+            //  / \     / \         /   \      \   /  \      / \          /  \  /   /  \
+            // 1   3   5   7       B     D      3 5    7    B   D        5    7    B    D
+            //
+            // bfs rotateLeft(node)           bfs after rotateLeft      bfs after 2nd rotateLeft
+            // 8,4,A,6,9,C,5,7,B,D             8,4,A,5,9,C,B,D          l8,6,A,4,7,9,C,5,B,D
+            //         ____8____                   ___8___                 ___8___
+            //        /          \                /       \               /       \
+            //     __4__        __A__            4         A             6         A
+            //          \       /    \             \     /  \           / \       / \
+            //           6     9     _C_ =>         5   9    C    =>   4   7     9   C
+            //          / \         /   \                   / \           /         /  \
+            //         5   7       B     D                 B   D         5         B    D
+            AVLTree<String> tree2 = new AVLTree<String>();
+            tree2.addMin("1");
+            tree2.addMax("D");
+            tree2.insert("2");
+            tree2.insert("3");
+            tree2.insert("4");
+            tree2.insert("5");
+            tree2.insert("6");
+            tree2.insert("7");
+            tree2.insert("8");
+            tree2.insert("9");
+            tree2.insert("A");
+            tree2.insert("B");
+            tree2.insert("C");
+
+            System.out.println("REMOVING");
+            tree2.removeMin();
+            tree2.removeMin();
+            tree2.removeMin();
         }
 
-    private void testTreeValues(AVLTree<Integer> tree, int i, int i1) {
+    private void validateTraversalOrder(AVLTree<Integer> tree, int rootLocation, int insertedNodeLocation, int insertedValue) {
+        AtomicInteger count = new AtomicInteger(1);
+
+        tree.getBFS(tree.getRoot()).forEach(node->{
+            if(count.get() == rootLocation) {
+                assert node.equals(tree.getRoot().getValue());
+            }
+            if(count.getAndIncrement() == insertedNodeLocation) {
+                assert node.equals(insertedValue);
+            }
+        });
+
+            System.out.println("inorder root: " + rootLocation);
+            System.out.println("inorder added node: " + insertedNodeLocation);
+    }
+
+    private void validateSizeAndRoot(AVLTree<Integer> actualTree, int expectedSize, int expectedRootValue) {
+        assert actualTree.getSize() == expectedSize;
+        assert actualTree.getRoot().getValue() == expectedRootValue;
+    }
+
+    private void treeDiagnostics(AVLTree<Integer> tree, int previousSize, int previousRootValue) {
+            assert previousSize-1 == tree.getSize();
+    }
+
+    private void printBFSandDFSInorder(AVLTree<Integer> tree) {
+        System.out.println("\nBFS: "+ tree.getBFS(tree.getRoot()).stream().map(String::valueOf).collect(Collectors.joining(", ")));
+        System.out.println("DFS inorder: " + tree.getDFS(tree.getRoot(),"inorder").stream().map(String::valueOf).collect(Collectors.joining(", ")));
+    }
+
+    public void testDelete() {
     }
 
     public void testAddMin() {
