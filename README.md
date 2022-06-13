@@ -1,6 +1,7 @@
 # AVL Tree View
 ### AVL Tree cases for balance, and expected location when inserting and removing with split -> min/max -> merge operations.
-AVLTree Author @Timofey Chudakov from JGraphT.
+AVLTree Author @TimofeyChudakov from JGraphT.
+Demo view Author @TomNelson
 
 ## Tree default visual. Buttons Add min, Add max, insert random node by splitting before the junction node, which is the first node greater than @param node to insert.
 ![AVLTreeDefaultView](https://user-images.githubusercontent.com/54422342/173126062-152b807a-3698-4619-9557-9730eb95d861.jpg)
