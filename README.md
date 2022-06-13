@@ -8,6 +8,7 @@ AVLTree Author @Timofey Chudakov from JGraphT.
 ## Test left subtree double heavy, single and double left rotation, by adding min values reverse order from 1024 to 1:
 ## Test left subtree double heavy, single and double left rotation, Removing min values until tree is empty:
 
+
 //        First double heavy left, right rotation:
 //        Before right rotation:   After right rotation:
 //              BFS 512,511,510
@@ -24,7 +25,6 @@ AVLTree Author @Timofey Chudakov from JGraphT.
 //     508   511                                                    509   512
 //          /   \                                                      \
 //        510   512                                                    510
-
     public void testLeftDoubleHeavyAddRemoveMin(){
         ArrayDeque<Integer> valuesReverseOrder = IntStream.range(1, 513).boxed().collect(Collectors.toCollection(ArrayDeque::new));
         AVLTree<Integer> tree = new AVLTree<Integer>();
