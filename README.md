@@ -8,37 +8,8 @@ AVLTree Author @Timofey Chudakov from JGraphT.
 ## Test left subtree double heavy, single and double left rotation, by adding min values reverse order from 1024 to 1:
 ## Test left subtree double heavy, single and double left rotation, Removing min values until tree is empty:
 
+![TestAddMinDoubleRightHeavyRemoveMinDoubleLeftHEavy](https://user-images.githubusercontent.com/54422342/173293513-8bacaf3f-1555-4089-9b82-ec5e3d59d652.jpg)
 
-//        First double heavy left, right rotation:
-//        Before right rotation:   After right rotation:
-//              BFS 512,511,510
-//              512++                    511
-//              /                       /   \
-//            511    =>               510   512
-//            /
-//          510
-//
-//        No. 247 / 247 Right Double Heavy, left rotation:
-//        Removing min: 508. BFS: 509, 508,511, 510, 512           After left rotation: bfs 511, 509, 512, 510
-//        509                                                         511
-//       /   \                                                       /   \
-//     508   511                                                    509   512
-//          /   \                                                      \
-//        510   512                                                    510
-    public void testLeftDoubleHeavyAddRemoveMin(){
-        ArrayDeque<Integer> valuesReverseOrder = IntStream.range(1, 513).boxed().collect(Collectors.toCollection(ArrayDeque::new));
-        AVLTree<Integer> tree = new AVLTree<Integer>();
-        IntStream.range(0,511).forEach(i->{
-            if(i < 450) {
-                tree.addMin(valuesReverseOrder.pollLast());
-            }
-            else {
-                tree.addMin(valuesReverseOrder.removeLast());
-            }
-        });
-        while(!tree.isEmpty()) {
-            tree.removeMin();
-        }
 
 ## Adding max values in order from 1 to 1024:
 ## Removing max values until tree is empty:
