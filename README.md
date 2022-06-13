@@ -2,11 +2,11 @@
 ### AVL Tree add, delete using tree minimum value, tree maximum or split _and_ merge subtrees
 AVLTree Author @Timofey Chudakov from JGraphT.
 
-## Default Tree level order: V44, V22, V88, V11, V33, V66, V91, V55, V77, V99
+## Tree default visual. Buttons Add min, Add max, insert random node by splitting before the junction node, which is the first node greater than @param node to insert.
 ![AVLTreeDefaultView](https://user-images.githubusercontent.com/54422342/173126062-152b807a-3698-4619-9557-9730eb95d861.jpg)
 
-## Adding min values reverse order from 1024 to 1:
-## Removing min values until tree is empty:
+## Test left subtree double heavy, single and double left rotation, by adding min values reverse order from 1024 to 1:
+## Test left subtree double heavy, single and double left rotation, Removing min values until tree is empty:
 
 ## Adding max values in order from 1 to 1024:
 ## Removing max values until tree is empty:
