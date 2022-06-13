@@ -5,6 +5,18 @@ AVLTree Author @Timofey Chudakov from JGraphT.
 ## Default Tree level order: V44, V22, V88, V11, V33, V66, V91, V55, V77, V99
 ![AVLTreeDefaultView](https://user-images.githubusercontent.com/54422342/173126062-152b807a-3698-4619-9557-9730eb95d861.jpg)
 
+## Adding min values reverse order from 1024 to 1:
+## Removing min values until tree is empty:
+
+## Adding max values in order from 1 to 1024:
+## Removing max values until tree is empty:
+
+## Adding min values in order 1 to 1024:
+## Removing min values until tree is empty:
+
+## Adding max values reverse order 1024 to 1:
+## Removing max values until tree is empty:
+
 ## Inserting random nodes: V47, V42, V67, V54, V95, V59, V49, V56, V42, V72 
 
 ![AddRandom9NodesV01ToV99](https://user-images.githubusercontent.com/54422342/173126082-96b397f8-7e79-4a54-945c-1a889db953a7.jpg)
