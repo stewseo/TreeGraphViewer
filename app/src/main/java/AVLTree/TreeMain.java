@@ -10,11 +10,14 @@ public class TreeMain {
         GraphUtil avlUtil = new GraphUtil();
         AVLTree<Integer> tree = new AVLTree<Integer>();
         AVLTreeTest treeTest = new AVLTreeTest();
+        treeTest.testAddMinMax(true);
+        treeTest.testAddMinMax(false);
+        treeTest.testLeftDoubleHeavyAddRemoveMin();
         treeTest.testInsert();
 
     }
-    private static List<AVLTree.AVLNode<Integer>> fillNodes(AVLTree<Integer> tree, int from, int to) {
-        Deque<AVLTree.AVLNode<Integer>> nodes = new ArrayDeque<>();
+    private static List<AVLTree.TreeNode<Integer>> fillNodes(AVLTree<Integer> tree, int from, int to) {
+        Deque<AVLTree.TreeNode<Integer>> nodes = new ArrayDeque<>();
         int middle = (from + to) / 2;
         //create value range
         Deque<Integer> minValues = IntStream.range(from, middle).boxed().collect(Collectors.toCollection(ArrayDeque::new));

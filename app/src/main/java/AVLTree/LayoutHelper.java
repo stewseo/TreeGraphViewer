@@ -10,7 +10,40 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LayoutHelper {
+    public enum Rotation {
+        SPLIT_BEFORE("Split Before", new AVLTree<String>()),
+        SPLIT_AFTER("Split After", new AVLTree<String>()),
+        MERGE_BEFORE("Merge Before", new AVLTree<String>()),
+        MERGE_AFTER("Merge After", new AVLTree<String>());
+        private static final Map<String, LayoutHelper.Rotation> BY_ROTATION = new HashMap<>();
 
+        static {
+            for (Rotation rotation : values()) {
+                BY_ROTATION.put(rotation.name, rotation);
+            }
+        }
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public static Rotation valueOfName(String name) {
+            return BY_ROTATION.get(name);
+        }
+        public static Rotation[] getSplitMergeType() {return LayoutHelper.Rotation.values();}
+
+        private final String name;
+        private final AVLTree<String> tree;
+
+        public AVLTree<String> getTree() {
+            return  tree;
+        }
+
+        <T> Rotation(String s, AVLTree<String> tree) {
+            this.name = s;
+            this.tree = tree;
+        }
+    }
     public enum Layouts {
         EDGE_AWARE("Edge Aware Tree Layout", new EdgeAwareTreeLayoutAlgorithm<>()),
         TREE_LAYOUT("Tree Layout", new TreeLayoutAlgorithm<>()),
@@ -19,6 +52,7 @@ public class LayoutHelper {
         TIDIER_RADIAL_TREE("Tidier Radial Tree Layout", new TidierRadialTreeLayoutAlgorithm<>());
 
         private static final Map<String, LayoutHelper.Layouts> BY_NAME = new HashMap<>();
+
 
         static {
             for (Layouts layout : values()) {
@@ -49,6 +83,6 @@ public class LayoutHelper {
         }
     }
 
-    public static Layouts[] getCombos() {return LayoutHelper.Layouts.values();
-    }
+    public static Layouts[] getCombos() {return LayoutHelper.Layouts.values();}
+
 }

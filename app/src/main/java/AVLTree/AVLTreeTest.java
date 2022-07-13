@@ -20,7 +20,7 @@ public class AVLTreeTest {
 
         public void testOneNode() {
             AVLTree<Integer> tree = new AVLTree<Integer>();
-            AVLTree.AVLNode<Integer> node = tree.addMax(1);
+            AVLTree.TreeNode<Integer> node = tree.addMax(1);
 
             String rootDiagnosticTest = "\nTesting AVLTree getRoot, AVLTree.AVLNode getRoot, getTreeMax, getTreeMin, getHeight, getMin, getMax, getSize\n";
             StringBuilder testResult = new StringBuilder(rootDiagnosticTest);
@@ -132,25 +132,58 @@ public class AVLTreeTest {
                 testResult.append(".....Passed\n\n");
             }
             System.out.println(testResult.toString());
-
         }
 
 
-        public void testAddMax() {
-            final int testNum = 700;
-            for (int nodeNum = 0; nodeNum < testNum; nodeNum++) {
-                AVLTree<Integer> tree = new AVLTree<Integer>();
-                for (int i = 0; i < nodeNum; i++) {
-                    tree.addMax(i);
-                    diagnostic(tree);
-                }
-                assert nodeNum == tree.getSize();
+//        First double heavy left, right rotation:
+//        Before right rotation:   After right rotation:
+//              BFS 512,511,510
+//              512++                    511
+//              /                       /   \
+//            511    =>               510   512
+//            /
+//          510
+//
+//        No. 247 / 247 Right Double Heavy, left rotation:
+//        Removing min: 508. BFS: 509, 508,511, 510, 512           After left rotation: bfs 511, 509, 512, 510
+//        509                                                         511
+//       /   \                                                       /   \
+//     508   511                                                    509   512
+//          /   \                                                      \
+//        510   512                                                    510
 
-                if(nodeNum == 699) {
-                    System.out.println("passed all diagnostics. tree.getSize: " + tree.getSize() + " tree.max: " + tree.getMax().getValue() + " tree.getRoot.getMax: " + tree.getRoot().getTreeMax().getValue());
-                }
+    public void testLeftDoubleHeavyAddRemoveMin() {
+        ArrayDeque<Integer> valuesReverseOrder = IntStream.range(500, 513).boxed().collect(Collectors.toCollection(ArrayDeque::new));
+        AVLTree<Integer> tree = new AVLTree<Integer>();
+        IntStream.range(0, 14).forEach(i -> {
+            if (i < 450) {
+                tree.addMin(valuesReverseOrder.pollLast());
+            } else {
+                tree.addMin(valuesReverseOrder.removeLast());
             }
+        });
+        while (!tree.isEmpty()) {
+            tree.removeMin();
         }
+    }
+
+    // addMax 0, addMax 1, addNax 2, addNax 3 bfs: bfs 1, 0, 2, 3
+    // .... addMax 1024 bfs:
+    public void testAddMinMax(boolean result) {
+            AVLTree<Integer> tree = new AVLTree<Integer>();
+            Deque<Integer> values = IntStream.range(1, 1025).boxed().collect(Collectors.toCollection(ArrayDeque::new));
+            assert values.size() == 1024;
+            // void testAddMinAddMaxToTree(boolean result) {
+            IntStream.range(0, values.size()).forEach(i-> {
+                AVLTree.TreeNode<Integer> node = result ?
+                        tree.addMin(i < 512 ? values.pollLast() : values.removeLast()) :
+                        tree.addMax(i < 512 ? values.pollFirst() : values.removeFirst());
+
+                assert i == tree.getMax().getValue();
+                assert i == tree.getSize();
+            });
+        }
+
 
         public void testInsert() {
             AVLTree<Integer> tree = new AVLTree<Integer>();
@@ -288,11 +321,10 @@ public class AVLTreeTest {
             //  1   4    =>    4    =>  2   5
             //     / \        / \        \
             //    3   5      3   5        3
-//            tree = new AVLTree<Integer>();
-//            int[] caseOneDelete = new int[]{1,2,3,4,5};
-//            Arrays.stream(caseOneDelete).forEach(tree::addMax);
-//            System.out.println("REMOVING");
-//            tree.removeMin();
+            tree = new AVLTree<Integer>();
+            int[] caseOneDelete = new int[]{1,2,3,4,5};
+            Arrays.stream(caseOneDelete).forEach(tree::addMax);
+            tree.removeMin();
 
             //bfs 8,4,A,2,6,9,C,1,3,5,7,B,D   bfs 8,4,A,2,6,9,C,3,5,7,B,D  bfs 8,4,A,3,6,9,C,5,7,B,D
             // removeMin() (1)                 removeMin() (2)              removeMin() (3) -> double right heavy
@@ -305,7 +337,7 @@ public class AVLTreeTest {
             // 1   3   5   7       B     D      3 5    7    B   D        5    7    B    D
             //
             // bfs rotateLeft(node)           bfs after rotateLeft      bfs after 2nd rotateLeft
-            // 8,4,A,6,9,C,5,7,B,D             8,4,A,5,9,C,B,D          l8,6,A,4,7,9,C,5,B,D
+            // 8,4,A,6,9,C,5,7,B,D             8,4,A,5,9,C,B,D          8,6,A,4,7,9,C,5,B,D
             //         ____8____                   ___8___                 ___8___
             //        /          \                /       \               /       \
             //     __4__        __A__            4         A             6         A
@@ -328,7 +360,6 @@ public class AVLTreeTest {
             tree2.insert("B");
             tree2.insert("C");
 
-            System.out.println("REMOVING");
             tree2.removeMin();
             tree2.removeMin();
             tree2.removeMin();
@@ -364,8 +395,6 @@ public class AVLTreeTest {
         System.out.println("DFS inorder: " + tree.getDFS(tree.getRoot(),"inorder").stream().map(String::valueOf).collect(Collectors.joining(", ")));
     }
 
-    public void testDelete() {
-    }
 
     public void testAddMin() {
             final int testNum = 700;
@@ -454,9 +483,9 @@ public class AVLTreeTest {
                 for (int split = 0; split < treeSize; split+=2) {
                     AVLTree<Integer> tree = new AVLTree<Integer>();
 
-                    List<AVLTree.AVLNode<Integer>> nodes = fillNodes(tree, 0, treeSize);
+                    List<AVLTree.TreeNode<Integer>> nodes = fillNodes(tree, 0, treeSize);
 
-                    AVLTree.AVLNode<Integer> splitNode = nodes.get(split);
+                    AVLTree.TreeNode<Integer> splitNode = nodes.get(split);
                     System.out.println("\n\ntree size before split: " + tree.getSize());
                     tree.nodeIterator().forEachRemaining(e->System.out.print(e.getValue() + ", "));
 
@@ -483,9 +512,9 @@ public class AVLTreeTest {
             for (int treeSize = 1; treeSize < 50; treeSize++) {
                 for (int split = 0; split < treeSize; split++) {
                     AVLTree<Integer> tree = new AVLTree<Integer>();
-                    List<AVLTree.AVLNode<Integer>> nodes = fillNodes(tree, 0, treeSize);
+                    List<AVLTree.TreeNode<Integer>> nodes = fillNodes(tree, 0, treeSize);
 
-                    AVLTree.AVLNode<Integer> splitNode = nodes.get(split);
+                    AVLTree.TreeNode<Integer> splitNode = nodes.get(split);
 
                     if(treeSize == 49 && split == 41) {
 
@@ -520,11 +549,11 @@ public class AVLTreeTest {
 
                 AVLTree<Integer> tree = new AVLTree<Integer>();
 
-                List<AVLTree.AVLNode<Integer>> nodes = fillNodes(tree, 0, treeSize);
-                Iterator<AVLTree.AVLNode<Integer>> iterator = tree.nodeIterator();
+                List<AVLTree.TreeNode<Integer>> nodes = fillNodes(tree, 0, treeSize);
+                Iterator<AVLTree.TreeNode<Integer>> iterator = tree.nodeIterator();
 
-                for (AVLTree.AVLNode<Integer> expected : nodes) {
-                    AVLTree.AVLNode<Integer> actual = iterator.next();
+                for (AVLTree.TreeNode<Integer> expected : nodes) {
+                    AVLTree.TreeNode<Integer> actual = iterator.next();
                 }
             }
         }
@@ -535,19 +564,19 @@ public class AVLTreeTest {
             }
             assert (to - from) == tree.getSize();
 
-            Iterator<AVLTree.AVLNode<Integer>> it = tree.nodeIterator();
+            Iterator<AVLTree.TreeNode<Integer>> it = tree.nodeIterator();
             for (int i = from; i < to; i++) {
                 assert it.hasNext();
 
-                AVLTree.AVLNode<Integer> node = it.next();
+                AVLTree.TreeNode<Integer> node = it.next();
 
                 assert i == node.getValue();
             }
         }
 
-        private List<AVLTree.AVLNode<Integer>> fillNodes(AVLTree<Integer> tree, int from, int to) {
+        private List<AVLTree.TreeNode<Integer>> fillNodes(AVLTree<Integer> tree, int from, int to) {
 
-            Deque<AVLTree.AVLNode<Integer>> nodes = new ArrayDeque<>();
+            Deque<AVLTree.TreeNode<Integer>> nodes = new ArrayDeque<>();
             int middle = (from + to) / 2;
 
             Deque<Integer> minValues = IntStream.range(from, middle).boxed().collect(Collectors.toCollection(ArrayDeque::new));
@@ -569,9 +598,9 @@ public class AVLTreeTest {
         }
 
         void diagnostic(AVLTree<Integer> tree) {
-            AVLTree.AVLNode<Integer> root = tree.getRoot();
+            AVLTree.TreeNode<Integer> root = tree.getRoot();
             if (root != null) {
-                AVLTree.AVLNode<Integer> virtualRoot = root.getParent();
+                AVLTree.TreeNode<Integer> virtualRoot = root.getParent();
 
                 assert virtualRoot.getLeft().equals(root);
 
@@ -579,7 +608,7 @@ public class AVLTreeTest {
             }
         }
 
-        DiagnosticInfo diagnostic(AVLTree.AVLNode<Integer> node) {
+        DiagnosticInfo diagnostic(AVLTree.TreeNode<Integer> node) {
 
             if (node == null) {
                 //subtree min,max = null, height,size = 0
@@ -636,12 +665,12 @@ public class AVLTreeTest {
         }
 
         private static class DiagnosticInfo {
-            AVLTree.AVLNode<Integer> subtreeMin;
-            AVLTree.AVLNode<Integer> subtreeMax;
+            AVLTree.TreeNode<Integer> subtreeMin;
+            AVLTree.TreeNode<Integer> subtreeMax;
             int height;
             int size;
 
-            public DiagnosticInfo(AVLTree.AVLNode<Integer> subtreeMin, AVLTree.AVLNode<Integer> subtreeMax, int height, int size) {
+            public DiagnosticInfo(AVLTree.TreeNode<Integer> subtreeMin, AVLTree.TreeNode<Integer> subtreeMax, int height, int size) {
                 this.subtreeMin = subtreeMin;
                 this.subtreeMax = subtreeMax;
                 this.height = height;

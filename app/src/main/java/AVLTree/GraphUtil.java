@@ -24,12 +24,19 @@ public class GraphUtil {
 
     public DelegateTree<Number, Number> createNumberedVerticesEdges() {
         DelegateTree<Number, Number> graph = new DelegateTree<>();
-        AVLTree.AVLNode<String> node = avlTree.addMax("V11");
+        AVLTree.TreeNode<String> node = avlTree.addMax("V11");
 
         return graph;
     }
 
-
+    public  Graph<String, Integer> createFirstMin() {
+        GraphBuilder<String, Integer, Graph<String, Integer>> tree =
+                GraphTypeBuilder.<String, Integer>forGraphType(DefaultGraphType.dag())
+                        .edgeSupplier(SupplierUtil.createIntegerSupplier())
+                        .buildGraphBuilder();
+        tree.addVertex("256");
+        return tree.build();
+    }
     public  Graph<String, Integer> createForest() {
         GraphBuilder<String, Integer, Graph<String, Integer>> tree =
                 GraphTypeBuilder.<String, Integer>forGraphType(DefaultGraphType.dag())
@@ -51,16 +58,16 @@ public class GraphUtil {
     public Forest<String, Integer> createVerticesEdges() {
         DelegateForest<String,Integer> graph = new DelegateForest<>();
 
-        AVLTree.AVLNode<String> node = (AVLTree.AVLNode<String>) avlTree.addMin("V11");
-        AVLTree.AVLNode<String> node2 = (AVLTree.AVLNode<String>) avlTree.addMin("V22");
-        AVLTree.AVLNode<String> node3 = (AVLTree.AVLNode<String>) avlTree.addMin("V33");
-        AVLTree.AVLNode<String> node4 = (AVLTree.AVLNode<String>) avlTree.addMin("V44");
-        AVLTree.AVLNode<String> node5 = (AVLTree.AVLNode<String>) avlTree.addMin("V55");
-        AVLTree.AVLNode<String> node6 = (AVLTree.AVLNode<String>) avlTree.addMin("V66");
-        AVLTree.AVLNode<String> node7 = (AVLTree.AVLNode<String>) avlTree.addMin("V77");
-        AVLTree.AVLNode<String> node8 = (AVLTree.AVLNode<String>) avlTree.addMin("V88");
-        AVLTree.AVLNode<String> node9 = (AVLTree.AVLNode<String>) avlTree.addMin("V99");
-        AVLTree.AVLNode<String> node10 = (AVLTree.AVLNode<String>) avlTree.addMin("v100");
+        AVLTree.TreeNode<String> node = (AVLTree.TreeNode<String>) avlTree.addMin("V11");
+        AVLTree.TreeNode<String> node2 = (AVLTree.TreeNode<String>) avlTree.addMin("V22");
+        AVLTree.TreeNode<String> node3 = (AVLTree.TreeNode<String>) avlTree.addMin("V33");
+        AVLTree.TreeNode<String> node4 = (AVLTree.TreeNode<String>) avlTree.addMin("V44");
+        AVLTree.TreeNode<String> node5 = (AVLTree.TreeNode<String>) avlTree.addMin("V55");
+        AVLTree.TreeNode<String> node6 = (AVLTree.TreeNode<String>) avlTree.addMin("V66");
+        AVLTree.TreeNode<String> node7 = (AVLTree.TreeNode<String>) avlTree.addMin("V77");
+        AVLTree.TreeNode<String> node8 = (AVLTree.TreeNode<String>) avlTree.addMin("V88");
+        AVLTree.TreeNode<String> node9 = (AVLTree.TreeNode<String>) avlTree.addMin("V99");
+        AVLTree.TreeNode<String> node10 = (AVLTree.TreeNode<String>) avlTree.addMin("v100");
 
         graph.addVertex("V44");
         graph.addEdge("V44V22".hashCode(), "V44", "V22");
@@ -105,9 +112,9 @@ public class GraphUtil {
 
     private static final Random RANDOM = new Random(17L);
 
-    private List<AVLTree.AVLNode<Integer>> fillNodes(AVLTree<Integer> tree, int from, int to) {
+    private List<AVLTree.TreeNode<Integer>> fillNodes(AVLTree<Integer> tree, int from, int to) {
 
-        Deque<AVLTree.AVLNode<Integer>> nodes = new ArrayDeque<>();
+        Deque<AVLTree.TreeNode<Integer>> nodes = new ArrayDeque<>();
         int middle = (from + to) / 2;
 
         Deque<Integer> minValues = IntStream.range(from, middle).boxed().collect(Collectors.toCollection(ArrayDeque::new));
